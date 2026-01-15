@@ -1,0 +1,68 @@
+    <div class="header">
+      <h1>Játékkártya Csomagok</h1>
+      <h2>7–13 éves gyerekeknek</h2>
+      <h3>
+        <a href="https://www.egylepesegyutt.hu/" target="_blank"
+          >Egy Lépés Együtt ~ Tanulás Támogató Tér</a
+        >
+      </h3>
+    </div>
+
+    <form id="login" style="display: block" class="view">
+      <div class="login-inner">
+        <h2>Belépés</h2>
+        <div class="login-fields">
+          <input type="email" id="email" placeholder="Email" />
+          <div class="login-password">
+            <input type="password" id="password" placeholder="Jelszó" />
+            <input
+              type="checkbox"
+              id="spw"
+              onclick="showPass()"
+              class="sr-only"
+            />
+            <label for="spw" title="Jelszó megjelenítése/elrejtése"></label>
+          </div>
+        </div>
+        <button type="submit" class="blue" id="loginBtn">Belépés</button>
+        <p id="loginError"></p>
+      </div>
+    </form>
+
+    <div id="home" class="view">
+      <div id="topActions">
+        <button class="orange" id="dailyChallengeBtn">Napi Minikihívás</button>
+        <button class="blue" id="favoritesBtn">Kedvencek listája</button>
+        <button class="red" id="logOut">Kijelentkezés</button>
+      </div>
+
+      <h2>Paklik</h2>
+      <div class="loader"></div>
+      <div class="grid" id="deckGrid"></div>
+    </div>
+
+    <div id="switchView" class="view" style="display: none; padding: 1rem">
+      <div id="topActions left">
+        <button class="red backHome" id="backHome">Vissza</button>
+        <button class="green randomCard" id="drawCard">
+          Húzok egy kártyát
+        </button>
+        <button class="orange newTakeFive" id="newTakeFive2">
+          Új leosztás
+        </button>
+        <button class="blue description" id="description2">Leírás</button>
+        <button class="red removeFav" id="removeFav2">Kedvencek törlése</button>
+      </div>
+      <h2>Paklik</h2>
+      <div class="loader"></div>
+      <div class="grid" id="switchCards"></div>
+    </div>
+
+    <dialog id="dialogView" class="">
+      <form method="dialog">
+        <button><span>&times;</span></button>
+      </form>
+      <div class="separator top"></div>
+      <p>Greetings, one and all!</p>
+      <div class="separator bottom"></div>
+    </dialog>

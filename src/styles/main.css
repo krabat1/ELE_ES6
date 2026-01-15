@@ -1,0 +1,609 @@
+@layer post {
+  /*@import url("https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap");*/
+
+  .post-body, #app {
+    container-name: post-body;
+    container-type: inline-size;
+
+    /* in @layer template
+    body:has(.grid.cardView){
+      overflow-y: hidden !important;
+    }*/
+    
+    .header {
+      text-align: center;
+      padding: 1rem;
+      background: #fff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      margin-bottom: 1rem;
+    }
+    h1,
+    h2,
+    h3 {
+      margin: 0.2rem 0;
+    }
+    #login,
+    #home,
+    #deckView,
+    #cardView {
+      display: none;
+      /*padding: 1rem;*/
+    }
+    #cardView {
+      z-index: 10;
+    }
+    button {
+      padding: 0.5rem 1rem;
+      margin: 0.5rem;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      color: #fff;
+      font-weight: bold;
+    }
+    h2,
+    button {
+      flex: 0 0 auto;
+    }
+    button.red {
+      background: #e74c3c;
+    }
+    button.green {
+      background: #2ecc71;
+    }
+    button.blue {
+      background: #3498db;
+    }
+    button.orange {
+      background: #e67e22;
+    }
+
+    /*
+    * Login
+    */
+    #login .login-inner {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    #login .login-inner h2,
+    #login .login-inner button{
+    }
+    #login .login-fields {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: row;
+      gap: 0 1rem;
+      flex-wrap: nowrap;
+
+      input[type="email"],
+      input[type="password"] {
+      }
+      input[type="email"]{
+      }
+      input[type="password"] {
+      }
+    }
+    .login-password {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      label {
+        cursor: pointer;
+      }
+      label:before {
+        content: "";
+        width: 2rem;
+        height: 2rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      input:checked ~ label:before {
+        content: var(--visibility_off);
+      }
+      input ~ label:before {
+        content: var(--visibility);
+      }
+    }
+    #loginError {
+      color: red;
+      flex: 1 0 100%;
+      text-align: center;
+    }
+
+    @container post-body (width < 31rem) {
+      /* Change the flex direction of the .child element. */
+      #login .login-fields {
+        flex-direction: row;
+        margin-left: clamp(0rem, -9.0005rem + 56.2533vw, 8.438rem);
+        flex-wrap: wrap;
+        justify-content: flex-start;
+      }
+      #login .login-password{
+        flex-wrap: wrap;
+      }
+      #login .login-password label{
+        flex-grow: 1;
+        justify-items: center;
+      }
+    }
+    input {
+      padding: 0.5rem;
+      margin: 0.5rem 0;
+      /*width: 100%;*/
+      max-width: 300px;
+    }    
+
+    /*
+    * Kártya és pakli listák
+    */
+    .view h2{
+      margin: 1rem 0 !important;
+    }
+    #topActions{
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0 1rem;
+      &.left{
+        justify-content: flex-start;
+      }
+    }
+    #home .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(10.201rem, 1fr));
+      gap: 1rem;
+      margin: 0 auto;
+    }
+    
+    #home .grid{
+
+      & > *:nth-child(1){order:99;}
+      & > *:nth-child(2){order:98;}
+      & > *:nth-child(3){order:97;}
+      & > *:nth-child(4){order:96;}
+      & > *:nth-child(5){order:95;}
+      & > *:nth-child(6){order:94;}
+      & > *:nth-child(7){order:93;}
+      & > *:nth-child(8){order:92;}
+      & > *:nth-child(9){order:91;}
+      & > *:nth-child(10){order:90;}
+      & > *:nth-child(11){order:89;}
+      & > *:nth-child(12){order:88;}
+      & > *:nth-child(13){order:87;}
+      & > *:nth-child(14){order:86;}
+    }
+
+
+    
+    div:has(.protect){
+     position: relative;
+    }
+    
+    #home .card {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      cursor: pointer;
+      p {
+        margin: 0.5rem 0;
+        font-weight: bold;
+        font-size: 130%;
+        padding: 0 .5rem;
+        flex-grow: 1;
+        align-content: center;
+        text-align: center;
+      }
+      img{
+        padding: 0 !important;
+        border-width: 0 !important;
+        box-shadow: none !important;
+        border-radius: .25rem;
+      }
+    }
+
+    /*.card {
+      position: relative;
+      border-radius: 0.5rem;
+      overflow: hidden;
+      cursor: pointer;
+      box-shadow: 0 0.125rem 0.313rem rgba(0, 0, 0, 0.2);
+      text-align: center;
+    }*/
+    #home .card{
+      cursor: pointer;
+    }
+    /*
+    .card img {
+      width: 90.5%;
+      height: auto;
+      display: block;
+      border-radius: 8px;
+      margin: 4.75%;
+      padding: 0 !important;
+      background: none !important;
+      border: 0 !important;
+      -moz-box-shadow: none !important;
+      -webkit-box-shadow: none !important;
+      box-shadow: none !important;
+    }*/
+    
+
+
+    
+
+
+    /*
+    * Egy kártya
+    */
+    .fav-close{
+      z-index: 5;
+      display: flex;
+      pointer-events: all;
+      align-items: center;
+      gap: .6rem;
+      margin-bottom: .8rem;
+      justify-content: center;
+      & > * {
+        cursor: pointer;
+        display: block;
+        aspect-ratio: 1;
+        width: 3rem;
+        height: 3rem;
+        display: flex;
+        align-items: center;
+        background: red;
+        border-radius: 50%;
+        justify-content: center;
+        box-sizing: border-box;
+        border: .15rem solid black;
+        transition: background .2s linear;
+        font-size: 1.5rem;
+        padding-top: 0.125rem;
+        span{
+          width: 1.5rem;
+          height: 1.5rem;
+        }
+      }
+      .fav{
+        background: gold;
+        span{
+          background-image: var(--heart);
+          filter: saturate(1.5);
+        }
+      }
+      .random{
+        background: linear-gradient(0deg, black 0%, black 40%, ghostwhite 40%);
+        span{
+          background-image: var(--cube);
+          zoom: 1.4;
+          background-position: center;
+        }
+      }
+      .close{
+        background: dimgrey;
+        span{
+          background-image: var(--close);
+          zoom: 1.4;
+        }
+      }
+      .trash{
+        display: none;
+      }
+    }
+    .fav-close.show-trash{
+      .fav{
+        display: none;
+      }
+      .trash{
+        display: flex;
+        background: #67ce67;
+        span{
+          background-image: var(--broken);
+          filter: saturate(1.5);
+        }
+      }
+    }
+
+    #cardImage{
+      min-width: 28cqw;
+      max-height: calc(100vh - 5.6rem);
+      padding: 4.75% !important;
+    }
+
+    .grid .card.loading,
+    #cardView .card-container.loading{
+      opacity: 0;
+    }
+    .grid .card,
+    #cardView .card-container{
+      opacity: 1;
+      transition: opacity 2s;
+    }
+    /* Nagy kép konténer */
+    #cardView .card-container {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      width: 100vw;
+      max-width: 100%;
+      height: 100vh;
+      justify-content: center;
+      align-items: center;
+      /*background: rgb(173 216 230 / 50%);*/
+      img{
+        max-width: 90vw;
+        max-height: 80vh;
+        border-radius: 8px;
+        display: block;
+      }
+      .wrapper{
+        position: relative;
+        display: flex;
+      }
+    }
+    
+    .grid:not(.cardView).total1{ 
+      max-width: calc((2 * 7.5rem) + (1 * 1rem)) !important; 
+    }
+    .grid:not(.cardView).total2{ 
+      max-width: calc((4 * 7.5rem) + (3 * 1rem)) !important;
+    }
+
+    #takeFive.grid:not(.cardView).total5{ 
+      max-width: calc((7 * 7.5rem) + (5 * 1rem));
+      grid-template-columns: repeat(auto-fit, minmax(9.201rem, 1fr));
+    }
+    
+    #favs.grid:empty:after {
+      content: 'Nincsenek kedvenceid, válassz egy paklit, kattints egy kártyára, és kattints a felette lévő \2764\FE0F  ikonra!';
+      font-size: 1.3rem;
+    }
+    
+    
+    #switchView .grid:not(.cardView){
+      /*--sm: 9rem;
+      --lg: 10rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+      width: auto;
+      margin: 0 auto;*/
+      display: grid; 
+      max-width: calc((7 * 7.5rem) + (5 * 1rem));
+      grid-template-columns: repeat(auto-fit, minmax(9.7rem, 1fr));
+      gap: 1rem;
+      margin: 0 auto;
+      & > div {
+        /*width: 10rem;*/
+        .prev,.next{
+          flex-grow:0;
+          flex-shrink:1;
+        }
+        .cardMiddle{
+          display: flex;
+          flex-direction: column;
+          max-height: 26rem;
+          max-width: 20rem;
+          .cardTop{
+            .fav-close{
+              display: none;
+            }
+          }
+          .cardBottom{
+            img{
+              /*max-width: 100%;
+              max-height: 100%;*/
+              
+              max-width: 88%;
+              /* max-height: 100%; */
+              /* width: 90.5%; */
+              height: auto;
+              display: block;
+              border-radius: 5%;
+              margin: 0;
+              padding: 5% !important;
+              background: none !important;
+              border: 0 !important;
+              -moz-box-shadow: 0.063rem 0.063rem 0.313rem rgba(0, 0, 0, 0.1) !important;
+              -webkit-box-shadow: 0.063rem 0.063rem 0.313rem rgba(0, 0, 0, 0.1) !important;
+              box-shadow: 0.063rem 0.063rem 0.313rem rgba(0, 0, 0, 0.1) !important;
+
+            }
+          }
+        }
+      }
+    }
+    #switchView .grid.cardView{
+      /* border: 4px solid red; */
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: center;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      top: 0;
+      left: 0;
+      z-index: 11;
+      & > div {
+        /* border: 4px solid gold; */
+        min-width: 100vw;
+        display: flex;
+        justify-content: center;
+        max-height: 95vh;
+        scroll-snap-align: center;
+        flex-direction: row;
+        .prev,.next{
+          flex-grow:1;
+          background-repeat: no-repeat;
+          background-position: center;
+          background-size: 3rem;
+          cursor: pointer;
+          filter: invert(1);
+        }
+        .prev.on{
+        	background-image: var(--backArrow)
+        }
+        .next.on{
+        	background-image: var(--forwardArrow)
+        }
+        .cardMiddle{
+          display: flex;
+          flex-direction: column;
+          flex: 0 1 22rem;
+          min-height: max-content;
+          .cardTop{
+    
+          }
+          .cardBottom{
+            display: flex;
+            justify-content: space-around;
+            img{
+              /*max-width: 100%;
+              max-height: 100%;*/
+              max-width: 89%;
+              display: block;
+              border-radius: 5%;
+              margin: 0;
+              padding: 5% !important;
+              background: white !important;
+              border: 0 !important;
+              -moz-box-shadow: 0.063rem 0.063rem 0.313rem rgba(0, 0, 0, 0.1) !important;
+              -webkit-box-shadow: 0.063rem 0.063rem 0.313rem rgba(0, 0, 0, 0.1) !important;
+              box-shadow: 0.063rem 0.063rem 0.313rem rgba(0, 0, 0, 0.1) !important;
+            }
+          }
+        }
+      }
+    }
+    
+    #switchView #memo_mester.grid.cardView {
+      background: #2A7B9B;
+      background:radial-gradient(circle, orangered 50%, coral 100%);
+    }
+    #switchView #mini_agytorna.grid.cardView {
+      background: #2A7B9B;
+      background:radial-gradient(circle, dodgerblue 50%, steelblue 100%);
+    }
+    #switchView #stressz_kezeles.grid.cardView {
+      background: #2A7B9B;
+      background:radial-gradient(circle, darkcyan 50%, deepskyblue 100%);
+    }
+    #switchView #mozgas_szunet.grid.cardView {
+      background: #2A7B9B;
+      background:radial-gradient(circle, firebrick 50%, indianred 100%);
+    }
+    #switchView #emlekmese_nyar.grid.cardView {
+      background: #2A7B9B;
+      background:radial-gradient(circle, steelblue 50%, royalblue 100%);
+    }
+    #switchView #hangulat_mento.grid.cardView {
+    background: #2A7B9B;
+    background: radial-gradient(circle at 152cqw 130cqw,
+        lightblue 57.5%, 
+        #D66C73 calc(57.5% + (5% / 7) * 1), /*red*/
+        #D6BF73 calc(57.5% + (5% / 7) * 2), /*orange*/
+        #D6EC73 calc(57.5% + (5% / 7) * 3), /*yellow*/
+        #57EC73 calc(57.5% + (4% / 7) * 4), /*green*/
+        #576CF3 calc(57.5% + (5% / 7) * 5), /*blue*/
+        #7C6CB4 calc(57.5% + (5% / 7) * 6), /*indigo*/
+        #9E6CF3 calc(57.5% + (5% / 7) * 7), /*violet*/
+        lightblue 63%, 
+        skyblue 100%
+      );
+    background-repeat: repeat;
+    background-size: 200cqw 200cqw;
+    }
+    #switchView #agyfelteke.grid.cardView {
+      background: #2A7B9B;
+      background: conic-gradient(from 0turn at 50% 50cqh, crimson, teal, olive, #FF8000, skyblue);
+    }
+    #switchView #kep-tortenet.grid.cardView {
+      background: #2A7B9B;
+      background: radial-gradient(circle, #009e60 50%, #009e8f 100%)
+    }
+    #switchView #kari_szerepcsere.grid.cardView {
+      background: #2A7B9B;
+      background: radial-gradient(circle, #009e60 50%, #009e8f 100%)
+    }
+    #switchView #favs.grid.cardView {
+      background: repeating-linear-gradient(135deg, mistyrose, mistyrose 25cqh, honeydew 25cqh, honeydew 50cqh);
+    }
+    #switchView #takeFive.grid.cardView {
+      background: repeating-linear-gradient(90deg, papayawhip, papayawhip 25vw, lemonchiffon 25vw, lemonchiffon 50vw);
+    }
+    
+
+    /*
+    * Dialog
+    */
+    #dialogView{
+      position: fixed;
+      align-self: anchor-center;
+      justify-self: center;
+      min-width: 33cqw;
+      max-width: 75cqw;
+      border: .1rem solid grey;
+      border-radius: .3rem;
+      form{
+        position: relative;
+        margin-bottom: 2rem;
+        button{
+          position: absolute;
+          top: -.8rem;
+          right: -.8rem;
+          cursor: pointer;
+          color: black;
+          padding: 0 .5rem;
+          span{
+            font-size: 2rem;
+            font-weight: 500;
+          }
+        }
+      }
+      p{
+        text-align: center;
+      }
+      & > button{
+        float: right;
+        padding-inline: 2rem;
+      }
+    }
+    .separator{
+      clear: both;
+    }
+
+    /* 🔒 Védőréteg minden kártyára */
+    .protect {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: transparent;
+      z-index: 5;
+    }
+
+    /* Overlay */
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgb(102 187 221 / 80%);
+      display: none;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    
+  } /* css nesting end*/
+} /* post layer end*/
