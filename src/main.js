@@ -3,13 +3,22 @@ import { Logging as Dev } from "./logging/log.js";
 import { LT } from "./logging/log.js";
 // importok
 
+function loadStyles() {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = `${BASE_URL}src/styles/main.css`;
+    document.head.appendChild(link);
+    loadApp();
+}
+
 async function loadApp() {
   const response = await fetch(`${BASE_URL}src/app.html`);
   const html = await response.text();
   document.getElementById("app").innerHTML = html;
   Dev.Log(LT.INIT, "#app loaded");
 }
-loadApp();
+
+loadStyles();
 
 // dom elemek
 const emailField = document.querySelector("#email");
