@@ -7,7 +7,7 @@ async function loadApp() {
   const response = await fetch(`${BASE_URL}src/app.html`);
   const html = await response.text();
   document.getElementById("app").innerHTML = html;
-  Dev.Log(LT.INIT, "#app loaded",LT.INIT,LT.INIT);
+  Dev.Log(LT.INIT, "#app loaded");
 }
 loadApp();
 

@@ -6,8 +6,12 @@ export const isLocal =
 //const BASE_URL = isLocal
 //  ? "./" // Helyi futtatásnál relatív út
 //  : "https://cdn.jsdelivr.net/gh/felhasznalo/repo@hash/"; // Bloggeren a CDN
-// Bloggeren manuélisan behívod a scriptet.
+// Bloggeren manuálisan behívod a scriptet.
 
-const BASE_URL = "./";
+// Ha a config.js a /src/config/ mappában van, 
+// akkor a "../../" visszalép a projekt gyökerébe.
+// A .href kinyeri a tiszta URL szöveget.
+const scriptPath = import.meta.url;
+const BASE_URL = new URL("../../", scriptPath).href; // 
 
 export default BASE_URL;
