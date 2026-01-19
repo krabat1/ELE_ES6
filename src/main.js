@@ -3,6 +3,7 @@ import { Logging as Dev } from "./logging/log.js";
 import { LT } from "./logging/log.js";
 import AppState from "./core/state.js";
 import Nav from "./navigation/nav.js";
+import { NavState } from "./navigation/nav.js";
 import DeckList from "./deck_list/deck_list.js";
 import Dialog from "./dialog/dialog.js";
 import Card from "./card/card.js";
@@ -168,17 +169,20 @@ function initEventListeners() {
   };
 
   window.onpopstate = function (event) {
-    if (!event.state || !event.state.index) return;
+    if (!event.state || !event.state.index) {
+      Dev.Log(LT.NAV, 'Nincs event.state vagy index!')
+      return;
+    }
     console.log(
       `state: ${JSON.stringify(event.state)}\n`,
-      `currentHistoryIndex: ${AppState.currentHistoryIndex}`,
+      `currentHistoryIndex: ${NavState.currentHistoryIndex}`,
     );
-    if (event.state.index < AppState.currentHistoryIndex) {
-      console.log("Hátra");
+    if (event.state.index < NavState.currentHistoryIndex) {
+      console.log(`Hátra event.state.index:${event.state.index} < NavState.currentHistoryIndex${NavState.currentHistoryIndex}`);
     } else {
-      console.log("Előre");
+      console.log(`Előre event.state.index:${event.state.index} > NavState.currentHistoryIndex${NavState.currentHistoryIndex}`);
     }
-    AppState,currentHistoryIndex = event.state.index;
+    NavState.currentHistoryIndex = event.state.index;
     console.log(event.state.stack);
     const actions = {
       confirm: () => {
@@ -186,7 +190,7 @@ function initEventListeners() {
         let dialogButton1 = {
           text: "Igen",
           onclick: function () {
-            navToHistory("login", {}); // forward stack levágása
+            Nav.navToHistory("login", {}); // forward stack levágása
             dialog.close();
             window.history.go(-3); // Tényleges kilépés az előzményekből
           },
@@ -200,14 +204,14 @@ function initEventListeners() {
           },
         };
 
-        showDialog("El akarod hagyni az alkalmazást?", [
+        Dialog.showDialog("El akarod hagyni az alkalmazást?", [
           dialogButton1,
           dialogButton2,
         ]);
       },
       login: () => {
         //console.log(`X ${event.state.stack}`)
-        hideAll("login");
+        UI.hideAll("login");
         dialog.close();
       },
       home: () => {
@@ -217,7 +221,7 @@ function initEventListeners() {
       deck: () => {
         //console.log(`X ${JSON.stringify(event.state)}`);
         //ha nincs megnyitva a pakli
-        if (currentDeck.slug !== event.state.deck_slug) {
+        if (AppState.currentDeck.slug !== event.state.deck_slug) {
           UI.initView("switchView");
           switchView.querySelector("h2").textContent = "";
           console.log("deckA " + AppState.currentDeck.slug, event.state.deck_slug);
@@ -249,7 +253,7 @@ function initEventListeners() {
           ) {
             console.log("cardB A");
             //switchView.querySelector('.grid').classList.add('cardView');
-            Card.showCardNew({
+            Deck.showCardNew({
               pushToHistory: false,
               cardNumber: event.state.cardNumber /*, cardData:cardData*/,
             });

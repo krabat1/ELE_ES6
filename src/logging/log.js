@@ -28,11 +28,11 @@ const Logging = {
 
   loggingConfig: {
     init: 0,
-    nav: 0,
-    decks: 1,
+    nav: 1,
+    decks: 0,
     deck: 0,
-    take5: 1,
-    favs: 1,
+    take5: 0,
+    favs: 0,
     //auth: true,
     //api: false,
     //ui: true,

@@ -79,7 +79,7 @@ const Deck = {
     UI.initView("switchView", AppState.decks[index].cards.length);
     //window.history.replaceState({ step: 'deck' }, "");
     //whatState()
-    console.log("openDeck pushState: deck");
+    //console.log("openDeck pushState: deck");
 
     //currentDeck = decks[index].cards;
     AppState.currentDeck = AppState.decks[index];
@@ -160,6 +160,12 @@ const Deck = {
       fav.setAttribute("title", "Hozzáadás a kedvencekhez");
       random.setAttribute("title", "Húzok egy kártyát");
       close.setAttribute("title", "Bezárás");
+
+      trash.appendChild(document.createElement('span'))
+      fav.appendChild(document.createElement('span'))
+      random.appendChild(document.createElement('span'))
+      close.appendChild(document.createElement('span'))
+
       trash.onclick = function (event) {
         Card.favToTrash(event);
       };
@@ -172,6 +178,8 @@ const Deck = {
       close.onclick = (event) => {
         this.showCardNew({ pushToHistory: true, cardNumber: j });
       };
+
+
 
       favClose.appendChild(trash);
       favClose.appendChild(fav);
