@@ -3,6 +3,12 @@ import { isLocal } from "../config/config.js";
 const LT = {
   // LT = LogType
   INIT: "init",
+  NAV: "nav",
+  DECKS: "decks",
+  DECK: "deck",
+  TAKE5: "take5",
+  FAVS: "favs",
+
   API: "api",
   AUTH: "auth",
 };
@@ -21,7 +27,12 @@ const Logging = {
    */
 
   loggingConfig: {
-    init: 1,
+    init: 0,
+    nav: 0,
+    decks: 1,
+    deck: 0,
+    take5: 1,
+    favs: 1,
     //auth: true,
     //api: false,
     //ui: true,
@@ -47,14 +58,17 @@ const Logging = {
       const timestamp = new Date().toLocaleTimeString();
       // Formázott megjelenítés: [Kategória] Időpont - Üzenet
       console.log(
-        `%c[${category.toUpperCase()}] %c${timestamp}\n%c${callerLine}:\n%c${message}\n%c${ details.join('\n') } %c\n[${category.toUpperCase()}:END]--------`,
+        `%c[${category.toUpperCase()}] %c${timestamp}\n%c${callerLine}:`,
         "color: blue; font-weight: bold",
         "color: gray",
-        "color: darkorange; font-style: italic",
-        "",
-        "",
-        "color: blue; font-weight: bold",
+        "color: orangered; font-style: italic",
       );
+      console.log(message);
+      details.forEach((detail) => console.log(detail));
+      console.log(
+        `%c[${category.toUpperCase()}:END]--------`,
+        "color: blue; font-weight: bold", 
+      )
     }
   },
 };

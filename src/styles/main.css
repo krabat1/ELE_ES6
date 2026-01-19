@@ -4,6 +4,7 @@
   .post-body, #app {
     container-name: post-body;
     container-type: inline-size;
+    max-width: 868px;
 
     /* in @layer template
     body:has(.grid.cardView){

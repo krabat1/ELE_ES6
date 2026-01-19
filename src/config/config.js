@@ -3,6 +3,8 @@ export const isLocal =
   window.location.hostname === "localhost" ||
   window.location.hostname === "127.0.0.1";
 
+export const isTouchDevice = window.matchMedia("(pointer: coarse)").matches;
+
 //const BASE_URL = isLocal
 //  ? "./" // Helyi futtatásnál relatív út
 //  : "https://cdn.jsdelivr.net/gh/felhasznalo/repo@hash/"; // Bloggeren a CDN
