@@ -39,7 +39,7 @@ const Security = {
 
 // 6. Még erősebb védelem: minden IMG fölé átlátszó réteg
 // ❗️ Ez rögtön meghívódik, nem akkor amikor kéne...
-document.querySelectorAll("img").forEach((img) => {
+/*document.querySelectorAll("img").forEach((img) => {
   const wrapper = document.createElement("div");
   //wrapper.style.position = "relative";
   //wrapper.style.display = "flex";
@@ -57,6 +57,6 @@ document.querySelectorAll("img").forEach((img) => {
   img.parentNode.insertBefore(wrapper, img);
   wrapper.appendChild(img);
   wrapper.appendChild(overlay);
-});
+});*/
 
 export default Security;
