@@ -11,8 +11,8 @@ import Auth from "./auth/auth.js";
 import UI from "./ui/ui.js";
 import Deck from "./deck/deck.js";
 import API from "./api/api.js";
+import Security from "./security/security.js";
 // importok
-
 
 function loadStyles() {
   Dev.Log(LT.INIT, "loadStyles() fut");
@@ -103,8 +103,8 @@ function initEventListeners() {
         console.error("logout API hiba", err);
       }
     }
-    localStorage.removeItem(TOKEN_KEY);
-    localStorage.removeItem(TOKEN_EXP_KEY);
+    localStorage.removeItem(Auth.TOKEN_KEY);
+    localStorage.removeItem(Auth.TOKEN_EXP_KEY);
     [emailField, passwordField, loginBtn].forEach((e) => {
       e.disabled = false;
     });
@@ -170,7 +170,7 @@ function initEventListeners() {
 
   window.onpopstate = function (event) {
     if (!event.state || !event.state.index) {
-      Dev.Log(LT.NAV, 'Nincs event.state vagy index!')
+      Dev.Log(LT.NAV, "Nincs event.state vagy index!");
       return;
     }
     console.log(
@@ -178,9 +178,13 @@ function initEventListeners() {
       `currentHistoryIndex: ${NavState.currentHistoryIndex}`,
     );
     if (event.state.index < NavState.currentHistoryIndex) {
-      console.log(`Hátra event.state.index:${event.state.index} < NavState.currentHistoryIndex${NavState.currentHistoryIndex}`);
+      console.log(
+        `Hátra event.state.index:${event.state.index} < NavState.currentHistoryIndex${NavState.currentHistoryIndex}`,
+      );
     } else {
-      console.log(`Előre event.state.index:${event.state.index} > NavState.currentHistoryIndex${NavState.currentHistoryIndex}`);
+      console.log(
+        `Előre event.state.index:${event.state.index} > NavState.currentHistoryIndex${NavState.currentHistoryIndex}`,
+      );
     }
     NavState.currentHistoryIndex = event.state.index;
     console.log(event.state.stack);
@@ -224,7 +228,10 @@ function initEventListeners() {
         if (AppState.currentDeck.slug !== event.state.deck_slug) {
           UI.initView("switchView");
           switchView.querySelector("h2").textContent = "";
-          console.log("deckA " + AppState.currentDeck.slug, event.state.deck_slug);
+          console.log(
+            "deckA " + AppState.currentDeck.slug,
+            event.state.deck_slug,
+          );
           Deck.openDeck(event.state.deck_slug, event.state.niceText);
         } else {
           console.log("deckB ");
@@ -242,7 +249,10 @@ function initEventListeners() {
         if (AppState.currentDeck.slug !== event.state.deck_slug) {
           UI.initView("switchView");
           switchView.querySelector("h2").textContent = "";
-          console.log("cardA " + AppState.currentDeck.slug, event.state.deck_slug);
+          console.log(
+            "cardA " + AppState.currentDeck.slug,
+            event.state.deck_slug,
+          );
           Deck.openDeck(event.state.deck_slug, event.state.niceText);
         } else {
           console.log("cardB ");
@@ -273,7 +283,12 @@ function initEventListeners() {
     };
     actions[event.state.stack]();
   };
+  Security.initSecurityListeners();
 }
+
+
+
+
 
 // ui?
 function backHome(pushToHistory = true) {
@@ -284,7 +299,7 @@ function backHome(pushToHistory = true) {
     : console.log("no pushToHistory");
   switchView.querySelector(".grid").classList.remove("cardView");
   AppState.currentDeck = [];
-  console.log(AppState)
+  console.log(AppState);
 }
 
 // Inicializálás

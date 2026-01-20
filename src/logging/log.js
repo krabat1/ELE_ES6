@@ -8,7 +8,7 @@ const LT = {
   DECK: "deck",
   TAKE5: "take5",
   FAVS: "favs",
-
+  SEC: "sec",
   API: "api",
   AUTH: "auth",
 };
@@ -33,8 +33,9 @@ const Logging = {
     deck: 0,
     take5: 0,
     favs: 0,
-    //auth: true,
-    //api: false,
+    sec: 1,
+    auth: 0,
+    api: 0,
     //ui: true,
     //globals: true,
   },
