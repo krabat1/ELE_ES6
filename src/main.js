@@ -15,7 +15,7 @@ import Security from "./security/security.js";
 // importok
 
 function loadStyles() {
-  Dev.Log(LT.INIT, "loadStyles() fut");
+  Dev.log(LT.INIT, "loadStyles() fut");
   const link = document.createElement("link");
   link.rel = "stylesheet";
   link.href = `${BASE_URL}src/styles/main.css`;
@@ -24,11 +24,10 @@ function loadStyles() {
 }
 
 async function loadApp() {
-  Dev.Log(LT.INIT, "loadApp() fut");
+  Dev.log(LT.INIT, "loadApp() fut");
   const response = await fetch(`${BASE_URL}src/app.html`);
   const html = await response.text();
   document.getElementById("app").innerHTML = html;
-  Dev.Log(LT.INIT, "#app loaded");
 
   login = document.querySelector("#login");
   emailField = document.querySelector("#email");
@@ -39,6 +38,7 @@ async function loadApp() {
   home = document.getElementById("home");
   switchView = document.getElementById("switchView");
   dialog = document.getElementById("dialogView");
+  Dev.log(LT.INIT, "selectors ok");
   init();
 }
 
@@ -55,14 +55,14 @@ let login,
 
 // event listenerek
 function initEventListeners() {
-  Dev.Log(LT.INIT, "initEventListeners() fut");
+  Dev.log(LT.INIT, "initEventListeners() fut");
   showPassInput.onclick = () => {
     UI.showPass();
   };
 
   loginBtn.onclick = async function (event) {
     event.preventDefault();
-    console.log("loginBtn.onclick");
+    Dev.log(LT.EVENT, "loginBtn.onclick");
     let email = emailField.value.trim();
     let password = passwordField.value.trim();
     const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -88,19 +88,26 @@ function initEventListeners() {
   };
 
   document.getElementById("logOut").onclick = async (e) => {
+    Dev.log(LT.EVENT, `logOut.onclick`);
     const token = localStorage.getItem(TOKEN_KEY);
     if (token) {
       try {
+        Dev.log(LT.AUTH, "accessAPI/logout");
         const res = await fetch(
           `${accessAPI}?action=logout&token=${encodeURIComponent(token)}`,
         );
 
         const json = await res.json();
         if (!json.success) {
-          console.error("logout API hiba:", json.error);
+          Dev.log(
+            LT.API,
+            new Error(`accessAPI/logout (${json.error}) sikertelen`),
+          );
+          //console.error("logout API hiba:", json.error);
         }
       } catch (err) {
-        console.error("logout API hiba", err);
+        Dev.log(LT.API, new Error(`accessAPI/logout (${err}) sikertelen`));
+        //console.error("logout API hiba", err);
       }
     }
     localStorage.removeItem(Auth.TOKEN_KEY);
@@ -117,36 +124,46 @@ function initEventListeners() {
   };
 
   document.querySelector(".backHome").onclick = () => {
+    Dev.log(LT.EVENT, `backHome.onclick`);
     // hide("deckView");
     backHome();
   };
 
   switchView.querySelector(".randomCard").onclick = () => {
+    Dev.log(LT.EVENT, `randomCard.onclick`);
     Card.fakeRandom();
   };
 
   document.getElementById("favoritesBtn").onclick = () => {
+    Dev.log(LT.EVENT, `favoritesBtn.onclick`);
     UI.initView("switchView");
     switchView.querySelector("h2").textContent = "";
     Deck.openDeck("favs", "Kedvencek");
   };
 
   document.getElementById("dailyChallengeBtn").onclick = async () => {
+    Dev.log(LT.EVENT, `dailyChallengeBtn.onclick`);
     UI.initView("switchView");
     switchView.querySelector("h2").textContent = "";
     Deck.openDeck("takeFive", "Napi Minikihívás");
   };
 
   switchView.querySelector(".newTakeFive").onclick = async () => {
+    Dev.log(LT.EVENT, `newTakeFive.onclick`);
     switchView.querySelector(".newTakeFive").disabled = true;
     let takeFive = JSON.parse(localStorage.getItem("takeFive") || "[]");
     UI.initView("switchView", takeFive.length);
     try {
+      Dev.log(LT.AUTH, "deckAPI/getRandomCards");
       const res = await fetch(`${API.deckAPI}?action=getRandomCards&count=5`);
       const json = await res.json();
-      Dev.Log(LT.TAKE5, "takeFive JSON:", json);
+      Dev.log(LT.TAKE5, "takeFive JSON:", json);
       if (!json.success) {
-        console.log("!json.success sajnos");
+        Dev.log(
+          LT.API,
+          new Error(`deckAPI/getRandomCards (${json.error}) sikertelen`),
+        );
+        //console.log("!json.success sajnos");
         return false;
       }
       if (json.success) {
@@ -156,8 +173,9 @@ function initEventListeners() {
         switchView.querySelector(".newTakeFive").disabled = false;
       }
     } catch (err) {
-      Dialog.showDialog("Hiba a deck-list betöltésénél.");
-      console.log(err);
+      (Dev.log(LT.DECKS, new Error(err)),
+        Dialog.showDialog("Hiba a deck-list betöltésénél."));
+      //console.log(err);
       switchView.querySelector(".newTakeFive").disabled = false;
     }
     DeckList.takeFiveToDecks();
@@ -170,24 +188,28 @@ function initEventListeners() {
 
   window.onpopstate = function (event) {
     if (!event.state || !event.state.index) {
-      Dev.Log(LT.NAV, "Nincs event.state vagy index!");
+      Dev.log(LT.NAV, "Nincs event.state vagy index!");
       return;
     }
-    console.log(
-      `state: ${JSON.stringify(event.state)}\n`,
-      `currentHistoryIndex: ${NavState.currentHistoryIndex}`,
+    Dev.log(
+      LT.NAV,
+      "onpopstate",
+      { _event_state: event.state },
+      { _NavState_currentHistoryIndex: NavState.currentHistoryIndex },
     );
     if (event.state.index < NavState.currentHistoryIndex) {
-      console.log(
-        `Hátra event.state.index:${event.state.index} < NavState.currentHistoryIndex${NavState.currentHistoryIndex}`,
+      Dev.log(
+        LT.NAV,
+        `Hátra: event.state.index:${event.state.index} < NavState.currentHistoryIndex${NavState.currentHistoryIndex}`,
       );
     } else {
-      console.log(
-        `Előre event.state.index:${event.state.index} > NavState.currentHistoryIndex${NavState.currentHistoryIndex}`,
+      Dev.log(
+        LT.NAV,
+        `Előre: event.state.index:${event.state.index} > NavState.currentHistoryIndex${NavState.currentHistoryIndex}`,
       );
     }
     NavState.currentHistoryIndex = event.state.index;
-    console.log(event.state.stack);
+    //console.log(event.state.stack);
     const actions = {
       confirm: () => {
         //console.log(`X ${event.state.stack}`)
@@ -228,13 +250,15 @@ function initEventListeners() {
         if (AppState.currentDeck.slug !== event.state.deck_slug) {
           UI.initView("switchView");
           switchView.querySelector("h2").textContent = "";
-          console.log(
-            "deckA " + AppState.currentDeck.slug,
-            event.state.deck_slug,
+          Dev.log(
+            LT.NAV,
+            "Másik deck ",
+            { _AppState_currentDeck_slug: AppState.currentDeck.slug },
+            { _event_state_deck__slug: event.state.deck_slug },
           );
           Deck.openDeck(event.state.deck_slug, event.state.niceText);
         } else {
-          console.log("deckB ");
+          Dev.log(LT.NAV, "Ugyanaz a deck ");
           UI.hideAll("switchView");
           if (
             switchView.querySelector(".grid").classList.contains("cardView")
@@ -249,26 +273,28 @@ function initEventListeners() {
         if (AppState.currentDeck.slug !== event.state.deck_slug) {
           UI.initView("switchView");
           switchView.querySelector("h2").textContent = "";
-          console.log(
-            "cardA " + AppState.currentDeck.slug,
-            event.state.deck_slug,
+          Dev.log(
+            LT.NAV,
+            "Másik deck kártyája ",
+            { _AppState_currentDeck_slug: AppState.currentDeck.slug },
+            { _event_state_deck__slug: event.state.deck_slug },
           );
           Deck.openDeck(event.state.deck_slug, event.state.niceText);
         } else {
-          console.log("cardB ");
+          Dev.log(LT.NAV, "Ugyanannak a decknek a kártyája ");
           UI.hideAll("switchView");
           // ha nincs kártya megnyitva
           if (
             !switchView.querySelector(".grid").classList.contains("cardView")
           ) {
-            console.log("cardB A");
+            Dev.log(LT.NAV, "Nincs kártya megnyitva");
             //switchView.querySelector('.grid').classList.add('cardView');
             Deck.showCardNew({
               pushToHistory: false,
               cardNumber: event.state.cardNumber /*, cardData:cardData*/,
             });
           } else {
-            console.log("cardB B");
+            Dev.log(LT.NAV, "Meg van nyitva kártya ");
             switchView
               .querySelector(`[data-card-number="${event.state.cardNumber}"]`)
               .scrollIntoView({
@@ -286,33 +312,30 @@ function initEventListeners() {
   Security.initSecurityListeners();
 }
 
-
-
-
-
 // ui?
 function backHome(pushToHistory = true) {
   UI.hideAll("home");
   switchView.querySelector(".grid").removeAttribute("id");
   pushToHistory
     ? Nav.navToHistory("home", {})
-    : console.log("no pushToHistory");
+    : Dev.log(LT.NAV, "no pushToHistory");
   switchView.querySelector(".grid").classList.remove("cardView");
   AppState.currentDeck = [];
-  console.log(AppState);
+  //console.log(AppState);
 }
 
 // Inicializálás
 // Alkalmazás indítása
 
 async function init() {
-  Dev.Log(LT.INIT, "init() fut");
+  Dev.log(LT.INIT, "init() fut");
   [emailField, passwordField, loginBtn].forEach((e) => {
     e.disabled = true;
   });
   Nav.navToHistory("login", {});
   //timeZoneField.value = Intl.DateTimeFormat().resolvedOptions().timeZone;
   loginError.textContent = "\u231B Bejelentkezés ellenőrzése...";
+  Dev.log(LT.INIT, "deckek betöltése");
   DeckList.loadDecks(); // gyorsabb ha már most
   await new Promise((resolve) => setTimeout(resolve, 1000));
   //console.log('bejelentkezés ellenőrzése')
@@ -321,8 +344,7 @@ async function init() {
     // már be vagyunk lépve, tölthetjük a deckek listáját
     UI.hideAll("home"); // vagy ami nálatok a főnézet
     Nav.navToHistory("home", {});
-    //loadDecks();
-    console.log("decks betöltve?", AppState.decks.length > 0);
+    Dev.log(LT.INIT, "deckek betöltve?", AppState.decks.length > 0);
   } else {
     // mutasd a login modalt/formot
     [emailField, passwordField, loginBtn].forEach((e) => {

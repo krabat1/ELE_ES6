@@ -1,4 +1,4 @@
-import { Logging as Dev} from "../logging/log.js";
+import { Logging as Dev } from "../logging/log.js";
 import { LT } from "../logging/log.js";
 
 const Security = {
@@ -33,7 +33,7 @@ const Security = {
         }
       }
     });
-    Dev.Log(LT.SEC, 'init security')
+    Dev.log(LT.SEC, "init security");
   },
 };
 

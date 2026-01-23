@@ -77,10 +77,9 @@ const Card = {
             .cardData,
         );
       }
-      console.log(
-        k,
-        AppState.currentStock.length,
-        AppState.currentWaste.length,
+      Dev.log(
+        LT.CARD,
+        `${k} - Stock:${AppState.currentStock.length} Waste:${AppState.currentWaste.length},`,
       );
     } else {
       Dialog.showDialog("Előbb válassz ki kedvenc kártyákat!");
@@ -92,7 +91,7 @@ const Card = {
    */
   addToFavs(event) {
     let favs = JSON.parse(localStorage.getItem("favs") || "[]");
-    Dev.Log(LT.FAVS, 'addToFavs',favs);
+    Dev.log(LT.FAVS, "addToFavs", AppState.currentCard, favs);
     // NEM ellenőrizzük hogy már kedvenc-e!
     favs.push(AppState.currentCard);
     localStorage.setItem("favs", JSON.stringify(favs));
@@ -106,17 +105,17 @@ const Card = {
    */
   favToTrash(event) {
     let favs = JSON.parse(localStorage.getItem("favs") || "[]");
-    Dev.Log(LT.FAVS, 'favToTrash',favs);
+    Dev.log(LT.FAVS, "favToTrash", AppState.currentCard, favs);
     // megkeressük az indexét a kártyának a kedvencekben
     const index = favs.findIndex((fav) => {
       if (!fav.internalID || !AppState.currentCard.internalID) {
-        console.log("nincs ilyen tulajdonság!");
+        Dev.log(LT.FAVS, "favToTrash: nincs ilyen tulajdonság!");
         return false;
       }
       return fav.internalID === AppState.currentCard.internalID;
     });
     // ha megtaláltuk, és csak akkor, töröljük
-    Dev.Log(LT.FAVS, 'index',index);
+    Dev.log(LT.FAVS, "index", index);
     if (index > -1) {
       favs.splice(index, 1); // 2nd parameter - csak egy elemet törlünk
       //showDialog("Törölve a kedvencekből!", "blue", "Bezárás", "hide('cardView'); dialog.close();");

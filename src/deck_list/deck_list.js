@@ -13,13 +13,15 @@ const DeckList = {
    */
   async loadDeck_NO(slug) {
     //console.log('kártyák betöltése ('+slug+')')
+    Dev.log(LT.API, 'deckAPI/getDeck')
     const res = await fetch(
       `${deckAPI}?action=getDeck&slug=${encodeURIComponent(slug)}`,
     );
     const json = await res.json();
     if (!json.success) {
-      console.log("!json.success sajnos");
-      console.log(json);
+      Dev.log(LT.API, new Error(`deckAPI/getDeck (${slug}, ${json.error}) sikertelen`))
+      //console.log("!json.success sajnos");
+      //console.log(json);
       return false;
     }
     let result = [];
@@ -36,23 +38,22 @@ const DeckList = {
   },
 
   async loadDecks() {
-    Dev.Log(LT.DECKS, "Paklik listájának betöltése");
+    Dev.log(LT.DECKS, "Paklik listájának betöltése");
     try {
+      Dev.log(LT.API, 'deckAPI/getDeckIndex')
       const res = await fetch(`${API.deckAPI}?action=getDeckIndex`);
       const data = await res.json();
 
       if (!data.success) {
-        console.log("!data.success sajnos");
+        Dev.log(LT.API, new Error(`deckAPI/getDeckIndex (${data.error}) sikertelen`))
+        //console.log("!data.success sajnos");
         return false;
       }
       //console.log(data);
       AppState.decks = data.data;
-      //console.log("decks", AppState.decks);
-      Dev.Log(LT.DECKS, `Ezt kaptuk:`, data);
-      Dev.Log(LT.DECKS, `decks:`, AppState.decks);
+      Dev.log(LT.DECKS, `Deckek az AppState-ben vannak`, {_AppState_decks:AppState.decks});
 
-      /*
-          
+      /*          
           const deckPromises = data.data.map((deck) => {
             // A loadDeck Promise-t ad vissza. Ez elkezdi a kártyák betöltését.
             const cardsPromise = loadDeck(deck.slug);
@@ -87,7 +88,7 @@ const DeckList = {
 
           */
       UI.initView("home", AppState.decks.length);
-
+      Dev.log(LT.DECKS, `create >home< DOM elements`)
       AppState.decks.forEach((deck) => {
         if (deck.length === 0) return;
         const div = document.createElement("div");
@@ -123,7 +124,9 @@ const DeckList = {
         home.querySelector(".loader").setAttribute("style", "display:none");
         home.querySelector(".grid").appendChild(div);
       });
+      Dev.log(LT.DECKS, 'append >home< DOM elements')
       // itt belemegy a napi minikihívás meg a kedvencek, ha lesz
+      Dev.log(LT.DECKS, "takeFive & favs --> AppState.decks")
       let favs = JSON.parse(localStorage.getItem("favs") || "[]");
       AppState.decks.push({
         slug: "favs",
@@ -141,9 +144,8 @@ const DeckList = {
         cards: takeFive,
       });
     } catch (err) {
-      //alert("Hiba a deck-list betöltésénél.");
       Dialog.showDialog("Hiba a deck-list betöltésénél.");
-      console.log(err);
+      Dev.log(LT.DECKS, new Error(`Hiba a deck-list betöltésénél.`), err)
     }
   },
 
@@ -169,7 +171,7 @@ const DeckList = {
     let takeFive = JSON.parse(localStorage.getItem("takeFive") || "[]");
     const index2 = AppState.decks.findIndex((deck) => {
       if (!deck.slug) {
-        console.log("nincs ilyen tulajdonság!");
+        Dev.log(LT.TAKE5, "takeFiveToDecks: nincs ilyen tulajdonság!");
         return false;
       }
       return deck.slug === "takeFive";
@@ -192,7 +194,7 @@ const DeckList = {
     let favs = JSON.parse(localStorage.getItem("favs") || "[]");
     const index2 = AppState.decks.findIndex((deck) => {
       if (!deck.slug) {
-        console.log("nincs ilyen tulajdonság!");
+        Dev.log(LT.DECKS, "favsToDecks: nincs ilyen tulajdonság!");
         return false;
       }
       return deck.slug === "favs";
@@ -205,7 +207,7 @@ const DeckList = {
         Deck.openDeck("favs", "Kedvencek");
       }
       if (favs.length == 0) {
-        console.log('favs.length',favs.length)
+        DEV.log(LT.DECKS,'üres tömb',{_favs_length: favs.length})
         switchView.querySelector(".grid").classList.remove("cardView");
       }
     }

@@ -39,7 +39,8 @@ const Deck = {
       //if(deck.hasOwnProperty('cards')){console.log('van cards')}
       return deck.slug === deck_slug && deck.hasOwnProperty("cards");
     });
-    console.log("downloaded", downloaded);
+    //console.log("downloaded", downloaded);
+    Dev.log(LT.DECK, `A pakli le van töltve? >${downloaded}< (downloaded)`);
     //hideAll("deckView");
     UI.hideAll("switchView");
     Nav.navToHistory("deck", {
@@ -48,24 +49,30 @@ const Deck = {
     });
     const index = AppState.decks.findIndex((deck) => deck.slug === deck_slug);
     if (!downloaded) {
+      Dev.log(LT.API, `deckAPI/getDeck (${deck_slug})`);
       const res = await fetch(
-        `${API.deckAPI}?action=getDeck&slug=${encodeURIComponent(deck_slug)}`
+        `${API.deckAPI}?action=getDeck&slug=${encodeURIComponent(deck_slug)}`,
       );
       const json = await res.json();
       if (!json.success) {
-        console.log("!json.success sajnos");
+        Dev.log(
+          LT.API,
+          new Error(`deckAPI/getDeck (${deck_slug}, ${json.error}) sikertelen`),
+        );
+        //console.log("!json.success sajnos");
         return false;
       }
       if (json.success) {
         const deck = json.data;
-        console.log("deck", deck);
+        Dev.log(LT.API, `deckAPI/getDeck (${deck_slug}) letöltve`, { deck });
+        //console.log("deck", deck);
         if (index > -1) {
           /**
            * MIÉRT NEM ????????????
            * AppState.decks[index] = deck;
            */
           AppState.decks[index].cards = deck.cards;
-          console.log("decks", AppState.decks);
+          //console.log("decks", AppState.decks);
           if (AppState.decks[index].descLink !== "") {
             switchView.querySelector(".description").removeAttribute("style");
             switchView.querySelector(".description").onclick = () => {
@@ -93,6 +100,7 @@ const Deck = {
     // kedvencekben van-e? megállapításához
     let favs = JSON.parse(localStorage.getItem("favs") || "[]");
 
+    Dev.log(LT.DECK, `create >deck< DOM elements (cards)`);
     for (let i = 1; i <= AppState.currentDeck.cards.length; i++) {
       let j = i.toString();
       if (j < 10) {
@@ -150,21 +158,20 @@ const Deck = {
       const fav = document.createElement("span");
       const random = document.createElement("span");
       const close = document.createElement("span");
-      trash.className = 'trash';
-      fav.className = 'fav';
-      random.className = 'random';
-      close.className = 'close';
-
+      trash.className = "trash";
+      fav.className = "fav";
+      random.className = "random";
+      close.className = "close";
 
       trash.setAttribute("title", "Törlés a kedvencekből");
       fav.setAttribute("title", "Hozzáadás a kedvencekhez");
       random.setAttribute("title", "Húzok egy kártyát");
       close.setAttribute("title", "Bezárás");
 
-      trash.appendChild(document.createElement('span'))
-      fav.appendChild(document.createElement('span'))
-      random.appendChild(document.createElement('span'))
-      close.appendChild(document.createElement('span'))
+      trash.appendChild(document.createElement("span"));
+      fav.appendChild(document.createElement("span"));
+      random.appendChild(document.createElement("span"));
+      close.appendChild(document.createElement("span"));
 
       trash.onclick = function (event) {
         Card.favToTrash(event);
@@ -178,8 +185,6 @@ const Deck = {
       close.onclick = (event) => {
         this.showCardNew({ pushToHistory: true, cardNumber: j });
       };
-
-
 
       favClose.appendChild(trash);
       favClose.appendChild(fav);
@@ -204,7 +209,7 @@ const Deck = {
         DeckList.handleImageLoad(event.target);
       };
       //cardImg.setAttribute('data-card-data', JSON.stringify(cardData).replace(/"/g, "&quot;"))
-      cardImg.dataset.cardData = JSON.stringify(cardData)/*.replace(
+      cardImg.dataset.cardData = JSON.stringify(cardData) /*.replace(
         /"/g,
         "&quot;"
       )*/;
@@ -241,8 +246,7 @@ const Deck = {
         };
       }
       cardHolder.appendChild(next);
-      Dev.Log(LT.DECK, cardHolder)
-
+      //Dev.log(LT.DECK, 'cardHolder', cardHolder)
 
       /*cardHolder.innerHTML = `
           	<div class="prev">
@@ -348,7 +352,11 @@ const Deck = {
       //teszt
       //switchView.querySelector('.grid').classList.add('cardView');
     }
-    Dev.Log(LT.DECK, switchView.querySelector(".grid"));
+    Dev.log(
+      LT.DECK,
+      `append >deck< DOM elements (cards) to .grid`,
+      switchView.querySelector(".grid"),
+    );
     switchView.querySelector(".loader").setAttribute("style", "display: none");
   },
 
@@ -363,7 +371,7 @@ const Deck = {
             deck_slug: AppState.currentDeck.slug,
             deck_niceText: AppState.currentDeck.niceText,
           })
-        : console.log("no pushToHistory");
+        : Dev.log(LT.DECK, "no pushToHistory");
       AppState.currentCard = {};
     } else {
       switchView.querySelector(".grid").classList.add("cardView");
@@ -376,7 +384,7 @@ const Deck = {
               cardNumber: cardNumber,
               sign: "a",
             })
-          : console.log("no pushToHistory");
+          : Dev.log(LT.CARD, "no pushToHistory");
         switchView
           .querySelector(`[data-card-number="${cardNumber}"]`)
           .scrollIntoView({
@@ -393,16 +401,15 @@ const Deck = {
               cardNumber: "01",
               sign: "b",
             })
-          : console.log("no pushToHistory");
-      };
+          : Dev.log(LT.NAV, "no pushToHistory");
+      }
       AppState.currentCard = JSON.parse(
         switchView.querySelector(`[data-card-number="${cardNumber}"] .cardimg`)
-          .dataset.cardData
+          .dataset.cardData,
       );
       //console.log('currentCard',currentCard.title);
     }
   },
-
 };
 
 export default Deck;

@@ -1,3 +1,6 @@
+import { Logging as Dev } from "../logging/log.js";
+import { LT } from "../logging/log.js";
+
 const UI = {
   show(elem) {
     document.getElementById(elem).style.display = "block";
@@ -12,6 +15,7 @@ const UI = {
     if (except) this.show(except);
   },
   initView(id, length = undefined) {
+    Dev.log(LT.UI, `initView(${id}, ${length})`)
     const view = document.getElementById(id);
     const grid = view.querySelector(".grid");
     const loader = view.querySelector(".loader");
