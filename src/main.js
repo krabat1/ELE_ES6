@@ -12,6 +12,7 @@ import UI from "./ui/ui.js";
 import Deck from "./deck/deck.js";
 import API from "./api/api.js";
 import Security from "./security/security.js";
+import Descriptions from "./descriptions/descriptions.js";
 // importok
 
 function loadStyles() {
@@ -55,6 +56,30 @@ let login,
 
 // event listenerek
 function initEventListeners() {
+  window.addEventListener('click', function(event){
+
+    //const action = event.target.dataset.action;
+    // Megkeressük a legközelebbi gombot, amin van 'data-action'
+    const btn = event.target.closest('[data-action]');
+
+    // Ha nem gombra (vagy gomb belsejére) kattintottak, kilépünk
+    if (!btn) return;
+
+    // Most már biztosan a gombtól kérjük le az adatokat
+    const { action, id } = btn.dataset;
+
+    if (action === 'loadDesc') {
+        const slug = switchView.querySelector('.grid').getAttribute('id');
+        Descriptions.loadDesc(slug)
+    }
+    
+    if (action === 'closeDesc') {
+        Descriptions.closeDesc()
+    }
+
+  })
+
+
   Dev.log(LT.INIT, "initEventListeners() fut");
   showPassInput.onclick = () => {
     UI.showPass();

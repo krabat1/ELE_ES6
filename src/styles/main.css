@@ -233,6 +233,64 @@
       box-shadow: none !important;
     }*/
     
+#description:empty{
+  opacity:0;
+  height:0;
+}
+#description{
+  opacity: 1;
+  height: auto;
+  transition: opacity .2s linear, height .2s linear;
+  width: 90cqw;
+  margin: 3cqw auto;
+
+  span.emoji{
+    display: inline-block;
+    aspect-ratio: 1;
+    margin-right: .5rem;
+    font-size: 1.5rem;
+    text-align: center;
+    height: 2rem;
+  }
+  p{
+    clear: none;
+    margin: 0 0 1rem 0;
+  }
+  ul{
+    list-style-type: none;
+    padding-left: 0;
+  }
+  ul ul{
+    padding-left: 1.2rem;
+  }
+  ul li {
+    position: relative;
+    padding-left: 2rem;
+    margin-bottom: .5rem;
+  }
+  ul li::before{
+    content: '⚈ ';
+    font-size: 200%;
+    line-height: 50%;
+    position: absolute;
+    top: .05rem;
+    left: 0rem;
+  }
+  ul li:nth-child(n+1)::before { color: orange; }
+  ul li:nth-child(n+2)::before { color: blue; }
+  ul li:nth-child(n+3)::before { color: red; }
+  ul li:nth-child(n+4)::before { color: cyan; }
+  ul li:nth-child(n+5)::before { color: purple; }
+  ul li:nth-child(n+6)::before { color: yellow; }
+  ul li:nth-child(n+7)::before { color: green; }
+  ul li:nth-child(n+8)::before { color: pink; }
+  ul li:nth-child(n+9)::before { color: lightgreen; }
+  ul li:nth-child(n+10)::before { color: lightblue; }
+  ul li:nth-child(n+11)::before { color: grey; }
+  li > * {
+      vertical-align: text-top;
+  }
+}
 
 
     

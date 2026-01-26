@@ -7,6 +7,7 @@ import API from "../api/api.js";
 import { isTouchDevice } from "../config/config.js";
 import DeckList from "../deck_list/deck_list.js";
 import Card from "../card/card.js";
+import Descriptions from "../descriptions/descriptions.js";
 
 const Deck = {
   async openDeck(deck_slug, deck_niceText) {
@@ -26,9 +27,13 @@ const Deck = {
         .querySelector(".removeFav")
         .setAttribute("style", "display: none;");
     }
-    switchView
-      .querySelector(".description")
-      .setAttribute("style", "display: none;");
+    // ez már az új
+    Descriptions.removeButtons();
+
+    // régi gomb
+    //switchView
+    //  .querySelector(".description")
+    //  .setAttribute("style", "display: none;");
 
     // nézzük meg a decks objektumot, nincs e már benne,
     // ha benne van ne töltsük be újra, hanem dolgozzunk abból,
@@ -72,15 +77,33 @@ const Deck = {
            * AppState.decks[index] = deck;
            */
           AppState.decks[index].cards = deck.cards;
-          //console.log("decks", AppState.decks);
-          if (AppState.decks[index].descLink !== "") {
-            switchView.querySelector(".description").removeAttribute("style");
-            switchView.querySelector(".description").onclick = () => {
-              window.open(AppState.decks[index].descLink, "_blank");
-            };
-          }
+
+          //innen
         }
       }
+    }
+    
+    // desclink gomb beillesztése/eltávolítása
+    const dlink = AppState.decks[index].descLink;
+    Dev.log(LT.DECK, "descLink", dlink, typeof dlink);
+
+    if (AppState.decks[index].descLink !== "") {
+      const elementExists = switchView.querySelectorAll(
+        '[data-action="loadDesc"]',
+      );
+      if (elementExists.length === 0) {
+        Descriptions.addButton();
+
+        // <button class="blue description" id="description2">Leírás</button>
+
+        // régi gomb
+        //switchView.querySelector(".description").removeAttribute("style");
+        //switchView.querySelector(".description").onclick = () => {
+        //  window.open(AppState.decks[index].descLink, "_blank");
+        //};
+      }
+    } else if (AppState.decks[index].descLink === "") {
+      Descriptions.removeButtons();
     }
 
     UI.initView("switchView", AppState.decks[index].cards.length);
