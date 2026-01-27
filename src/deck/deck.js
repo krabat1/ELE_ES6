@@ -8,24 +8,38 @@ import { isTouchDevice } from "../config/config.js";
 import DeckList from "../deck_list/deck_list.js";
 import Card from "../card/card.js";
 import Descriptions from "../descriptions/descriptions.js";
+import DOM from "../dom/dom.js";
 
 const Deck = {
   async openDeck(deck_slug, deck_niceText) {
     //currentDeckSlug = deck_slug;
-    switchView.querySelector(".grid").setAttribute("id", deck_slug);
+    DOM.switchView.querySelector(".grid").setAttribute("id", deck_slug);
     if (deck_slug === "takeFive") {
-      switchView.querySelector(".newTakeFive").removeAttribute("style");
+      //switchView.querySelector(".newTakeFive").removeAttribute("style");
+      this.removeNewTake5Buttons()
+      this.addNewTake5Button()
     } else {
-      switchView
-        .querySelector(".newTakeFive")
-        .setAttribute("style", "display: none;");
+      //switchView
+      //  .querySelector(".newTakeFive")
+      //  .setAttribute("style", "display: none;");
+      this.removeNewTake5Buttons()
     }
     if (deck_slug === "favs") {
-      switchView.querySelector(".removeFav").removeAttribute("style");
+      //switchView.querySelector(".removeFav").removeAttribute("style");
+
+      this.removeRemoveFavButton()
+
+      const removeFavButton = document.createElement('button')
+      removeFavButton.className = 'red'
+      removeFavButton.dataset.action = 'removeFav'
+      removeFavButton.innerText = 'Kedvencek törlése'
+      DOM.switchView.querySelector("#topActions").appendChild(removeFavButton);
+
     } else {
-      switchView
-        .querySelector(".removeFav")
-        .setAttribute("style", "display: none;");
+      //switchView
+      //  .querySelector(".removeFav")
+      //  .setAttribute("style", "display: none;");
+      this.removeRemoveFavButton()
     }
     // ez már az új
     Descriptions.removeButtons();
@@ -88,7 +102,7 @@ const Deck = {
     Dev.log(LT.DECK, "descLink", dlink, typeof dlink);
 
     if (AppState.decks[index].descLink !== "") {
-      const elementExists = switchView.querySelectorAll(
+      const elementExists = DOM.switchView.querySelectorAll(
         '[data-action="loadDesc"]',
       );
       if (elementExists.length === 0) {
@@ -116,7 +130,7 @@ const Deck = {
     AppState.currentStock = [];
     AppState.currentWaste = [];
 
-    switchView.querySelector("h2").textContent = deck_niceText;
+    DOM.switchView.querySelector("h2").textContent = deck_niceText;
     //currentDeckTitle = deck_niceText;
     AppState.currentDeckTitle = AppState.currentDeck.niceText;
 
@@ -144,7 +158,7 @@ const Deck = {
           k = k.padStart(2, "0");
         }
         prev.onclick = (e) => {
-          switchView.querySelector(`[data-card-number="${k}"]`).scrollIntoView({
+          DOM.switchView.querySelector(`[data-card-number="${k}"]`).scrollIntoView({
             behavior: "smooth",
             block: "center",
             inline: "center",
@@ -252,7 +266,7 @@ const Deck = {
           k = k.padStart(2, "0");
         }
         next.onclick = (e) => {
-          switchView.querySelector(`[data-card-number="${k}"]`).scrollIntoView({
+          DOM.switchView.querySelector(`[data-card-number="${k}"]`).scrollIntoView({
             behavior: "smooth",
             block: "center",
             inline: "center",
@@ -370,7 +384,7 @@ const Deck = {
       cardHolder.querySelector(".trash").onclick = (event) => {
         favToTrash(event);
       };*/
-      switchView.querySelector(".grid").appendChild(cardHolder);
+      DOM.switchView.querySelector(".grid").appendChild(cardHolder);
 
       //teszt
       //switchView.querySelector('.grid').classList.add('cardView');
@@ -378,17 +392,17 @@ const Deck = {
     Dev.log(
       LT.DECK,
       `append >deck< DOM elements (cards) to .grid`,
-      switchView.querySelector(".grid"),
+      DOM.switchView.querySelector(".grid"),
     );
-    switchView.querySelector(".loader").setAttribute("style", "display: none");
+    DOM.switchView.querySelector(".loader").setAttribute("style", "display: none");
   },
 
   showCardNew({
     pushToHistory = true,
     cardNumber = undefined /*, cardData = {}*/,
   }) {
-    if (switchView.querySelector(".grid").classList.contains("cardView")) {
-      switchView.querySelector(".grid").classList.remove("cardView");
+    if (DOM.switchView.querySelector(".grid").classList.contains("cardView")) {
+      DOM.switchView.querySelector(".grid").classList.remove("cardView");
       pushToHistory
         ? Nav.navToHistory("deck", {
             deck_slug: AppState.currentDeck.slug,
@@ -397,7 +411,7 @@ const Deck = {
         : Dev.log(LT.DECK, "no pushToHistory");
       AppState.currentCard = {};
     } else {
-      switchView.querySelector(".grid").classList.add("cardView");
+      DOM.switchView.querySelector(".grid").classList.add("cardView");
       if (cardNumber) {
         //console.log('sign a '+ JSON.stringify(currentDeck))
         pushToHistory
@@ -408,7 +422,7 @@ const Deck = {
               sign: "a",
             })
           : Dev.log(LT.CARD, "no pushToHistory");
-        switchView
+        DOM.switchView
           .querySelector(`[data-card-number="${cardNumber}"]`)
           .scrollIntoView({
             behavior: "smooth",
@@ -427,11 +441,84 @@ const Deck = {
           : Dev.log(LT.NAV, "no pushToHistory");
       }
       AppState.currentCard = JSON.parse(
-        switchView.querySelector(`[data-card-number="${cardNumber}"] .cardimg`)
+        DOM.switchView.querySelector(`[data-card-number="${cardNumber}"] .cardimg`)
           .dataset.cardData,
       );
       //console.log('currentCard',currentCard.title);
     }
+  },
+  removeRemoveFavButton(){
+    const elementExists = DOM.switchView.querySelectorAll(
+      '[data-action="removeFav"]',
+    );
+    if (elementExists.length > 0) {
+      elementExists.forEach((el) => {
+        el.remove();
+      });
+    }
+  },
+  async newTakeFive(){
+    Dev.log(LT.EVENT, `newTakeFive.onclick`);
+    DOM.switchView.querySelector('[data-action="newTakeFive"]').disabled = true;
+    let takeFive = JSON.parse(localStorage.getItem("takeFive") || "[]");
+    UI.initView("switchView", takeFive.length);
+    try {
+      Dev.log(LT.AUTH, "deckAPI/getRandomCards");
+      const res = await fetch(`${API.deckAPI}?action=getRandomCards&count=5`);
+      const json = await res.json();
+      Dev.log(LT.TAKE5, "takeFive JSON:", json);
+      if (!json.success) {
+        Dev.log(
+          LT.API,
+          new Error(`deckAPI/getRandomCards (${json.error}) sikertelen`),
+        );
+        //console.log("!json.success sajnos");
+        return false;
+      }
+      if (json.success) {
+        takeFive = json.data.cards;
+        localStorage.setItem("takeFive", JSON.stringify(takeFive));
+      } else {
+        DOM.switchView.querySelector(".newTakeFive").disabled = false;
+      }
+    } catch (err) {
+      (Dev.log(LT.DECKS, new Error(err)),
+        Dialog.showDialog("Hiba a deck-list betöltésénél."));
+      //console.log(err);
+      DOM.switchView.querySelector(".newTakeFive").disabled = false;
+    }
+    DeckList.takeFiveToDecks();
+  },
+  addNewTake5Button() {
+    const newTake5Button = document.createElement("button");
+    newTake5Button.className = "orange";
+    //descButton.className = "blue description";
+    //descButton.setAttribute("id", "description2");
+    newTake5Button.innerText = "Új leosztás";
+    newTake5Button.dataset.action = "newTakeFive";
+    DOM.switchView.querySelector("#topActions").appendChild(newTake5Button);
+  },
+  removeNewTake5Buttons() {
+    const elementExists = switchView.querySelectorAll(
+      '[data-action="newTakeFive"]',
+    );
+    if (elementExists.length > 0) {
+      elementExists.forEach((el) => {
+        el.remove();
+      });
+    }
+  },
+  openTake5(){
+    Dev.log(LT.EVENT, `dailyChallengeBtn.onclick`);
+    UI.initView("switchView");
+    DOM.switchView.querySelector("h2").textContent = "";
+    this.openDeck("takeFive", "Napi Minikihívás");
+  },
+  openFavs(){
+    Dev.log(LT.EVENT, `favoritesBtn.onclick`);
+    UI.initView("switchView");
+    DOM.switchView.querySelector("h2").textContent = "";
+    this.openDeck("favs", "Kedvencek");
   },
 };
 

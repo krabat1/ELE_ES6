@@ -5,12 +5,13 @@ import Deck from "../deck/deck.js";
 import Nav from "../navigation/nav.js";
 import DeckList from "../deck_list/deck_list.js";
 import Dialog from "../dialog/dialog.js";
+import DOM from "../dom/dom.js";
 
 const Card = {
   fakeRandom() {
     if (AppState.currentDeck.cards.length > 0) {
       let k;
-      let isCardView = switchView
+      let isCardView = DOM.switchView
         .querySelector(".grid")
         .classList.contains("cardView");
       if (
@@ -54,7 +55,7 @@ const Card = {
           k = k.padStart(2, "0");
         }
         if (!isCardView) {
-          switchView.querySelector(".grid").classList.add("cardView");
+          DOM.switchView.querySelector(".grid").classList.add("cardView");
           //navTo History('card',{deck:currentDeck.slug, cardNumber:k});
           Nav.navToHistory("card", {
             deck_slug: AppState.currentDeck.slug,
@@ -63,7 +64,7 @@ const Card = {
             sign: "c",
           });
         }
-        switchView.querySelector(`[data-card-number="${k}"]`).scrollIntoView({
+        DOM.switchView.querySelector(`[data-card-number="${k}"]`).scrollIntoView({
           behavior: "smooth",
           block: "center",
           inline: "center",
@@ -73,7 +74,7 @@ const Card = {
         AppState.currentStock.splice(randomNum, 1);
         AppState.currentWaste.push(randomNum);
         AppState.currentCard = JSON.parse(
-          switchView.querySelector(`[data-card-number="${k}"] .cardimg`).dataset
+          DOM.switchView.querySelector(`[data-card-number="${k}"] .cardimg`).dataset
             .cardData,
         );
       }

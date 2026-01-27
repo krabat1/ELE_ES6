@@ -15,24 +15,26 @@
           <input type="email" id="email" placeholder="Email" />
           <div class="login-password">
             <input type="password" id="password" placeholder="Jelszó" />
-            <input
-              type="checkbox"
-              id="spw"
-              class="sr-only"
-            />
+            <!--input type="checkbox" id="spw" class="sr-only"/-->
+            <input type="checkbox" data-action="showPass" class="sr-only"/>
+            
             <label for="spw" title="Jelszó megjelenítése/elrejtése"></label>
           </div>
         </div>
-        <button type="submit" class="blue" id="loginBtn">Belépés</button>
+        <!--button-- type="submit" class="blue" id="loginBtn">Belépés</!--button-->
+        <button type="submit" class="blue" data-action="login">Belépés</button>
         <p id="loginError"></p>
       </div>
     </form>
 
     <div id="home" class="view">
       <div id="topActions">
-        <button class="orange" id="dailyChallengeBtn">Napi Minikihívás</button>
-        <button class="blue" id="favoritesBtn">Kedvencek listája</button>
-        <button class="red" id="logOut">Kijelentkezés</button>
+        <!--button class="orange" id="dailyChallengeBtn">Napi Minikihívás</!--button>
+        <button-- class="blue" id="favoritesBtn">Kedvencek listája</button-->
+        <button class="orange" data-action="openTake5">Napi Minikihívás</button>
+        <button class="blue" data-action="openFavs">Kedvencek listája</button>
+        <button class="red" data-action="logout">Kijelentkezés</button>
+        <!--button-- class="red" id="logOut">Kijelentkezés</!--button-->
       </div>
 
       <h2>Paklik</h2>
@@ -42,15 +44,16 @@
 
     <div id="switchView" class="view" style="display: none; padding: 1rem">
       <div id="topActions" class="left">
-        <button class="red backHome" id="backHome">Vissza</button>
-        <button class="green randomCard" id="drawCard">
-          Húzok egy kártyát
-        </button>
-        <button class="orange newTakeFive" id="newTakeFive2">
+        <button class="red" data-action="backHome">Vissza</button>
+        <!--button-- class="red backHome" id="backHome">Vissza</!--button-->
+        <button class="green" data-action="fakeRandom">Húzok egy kártyát</button>
+        <!--button-- class="green randomCard" id="drawCard">Húzok egy kártyát</!--button-->
+        <!--button class="orange newTakeFive" id="newTakeFive2">
           Új leosztás
-        </button>
+        </!--button-->
         <!--button class="blue description" id="description2">Leírás</!--button-->
-        <button class="red removeFav" id="removeFav2">Kedvencek törlése</button>
+        <!--button-- class="red" data-action="removeFav">Kedvencek törlése</!--button-->
+        <!--button-- class="red removeFav" id="removeFav2">Kedvencek törlése</!--button-->
       </div>
       <div id="description"></div>
       <h2>Paklik</h2>

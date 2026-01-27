@@ -1,5 +1,6 @@
 import { Logging as Dev } from "../logging/log.js";
 import { LT } from "../logging/log.js";
+import DOM from "../dom/dom.js";
 
 const UI = {
   show(elem) {
@@ -31,11 +32,11 @@ const UI = {
   },
 
   showPass() {
-    var x = document.getElementById("password");
-    if (x.type === "password") {
-      x.type = "text";
+    //const x = document.getElementById("password");
+    if (DOM.passwordField.type === "password") {
+      DOM.passwordField.type = "text";
     } else {
-      x.type = "password";
+      DOM.passwordField.type = "password";
     }
   },
 

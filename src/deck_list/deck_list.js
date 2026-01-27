@@ -5,6 +5,7 @@ import API from "../api/api.js";
 import AppState from "../core/state.js";
 import UI from "../ui/ui.js";
 import Deck from "../deck/deck.js";
+import DOM from "../dom/dom.js";
 
 const DeckList = {
 
@@ -118,11 +119,11 @@ const DeckList = {
 
         div.onclick = () => {
           UI.initView("switchView");
-          switchView.querySelector("h2").textContent = "";
+          DOM.switchView.querySelector("h2").textContent = "";
           Deck.openDeck(deck.slug, deck.niceText);
         };
-        home.querySelector(".loader").setAttribute("style", "display:none");
-        home.querySelector(".grid").appendChild(div);
+        DOM.home.querySelector(".loader").setAttribute("style", "display:none");
+        DOM.home.querySelector(".grid").appendChild(div);
       });
       Dev.log(LT.DECKS, 'append >home< DOM elements')
       // itt belemegy a napi minikihívás meg a kedvencek, ha lesz
@@ -178,16 +179,16 @@ const DeckList = {
     });
     if (index2 > -1) {
       AppState.decks[index2].cards = takeFive;
-      if (switchView.querySelector("h2").textContent === "Napi Minikihívás") {
+      if (DOM.switchView.querySelector("h2").textContent === "Napi Minikihívás") {
         UI.initView("switchView");
-        switchView.querySelector("h2").textContent = "";
+        DOM.switchView.querySelector("h2").textContent = "";
         Deck.openDeck("takeFive", "Napi Minikihívás");
       }
       /*if(favs.length == 0){
             switchView.querySelector(".grid").classList.remove('cardView');
           }*/
     }
-    switchView.querySelector(".newTakeFive").disabled = false;
+    DOM.switchView.querySelector('[data-action="newTakeFive"]').disabled = false;
   },
 
   favsToDecks() {
@@ -201,14 +202,14 @@ const DeckList = {
     });
     if (index2 > -1) {
       AppState.decks[index2].cards = favs;
-      if (switchView.querySelector("h2").textContent === "Kedvencek") {
+      if (DOM.switchView.querySelector("h2").textContent === "Kedvencek") {
         //UI.initView("switchView");
-        switchView.querySelector("h2").textContent = "";
+        DOM.switchView.querySelector("h2").textContent = "";
         Deck.openDeck("favs", "Kedvencek");
       }
       if (favs.length == 0) {
-        DEV.log(LT.DECKS,'üres tömb',{_favs_length: favs.length})
-        switchView.querySelector(".grid").classList.remove("cardView");
+        Dev.log(LT.DECKS,'üres tömb',{_favs_length: favs.length})
+        DOM.switchView.querySelector(".grid").classList.remove("cardView");
       }
     }
   },

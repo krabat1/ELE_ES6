@@ -1,6 +1,7 @@
 import BASE_URL from "../config/config.js";
 import { Logging as Dev } from "../logging/log.js";
 import { LT } from "../logging/log.js";
+import DOM from "../dom/dom.js";
 
 const Descriptions = {
   description: document.querySelector("#description"),
@@ -22,14 +23,15 @@ const Descriptions = {
   },
   addButton() {
     const descButton = document.createElement("button");
-    descButton.className = "blue description";
-    descButton.setAttribute("id", "description2");
+    descButton.className = "blue";
+    //descButton.className = "blue description";
+    //descButton.setAttribute("id", "description2");
     descButton.innerText = "Leírás";
     descButton.dataset.action = "loadDesc";
-    switchView.querySelector("#topActions").appendChild(descButton);
+    DOM.switchView.querySelector("#topActions").appendChild(descButton);
   },
   removeButtons() {
-    const elementExists = switchView.querySelectorAll(
+    const elementExists = DOM.switchView.querySelectorAll(
       '[data-action="loadDesc"]',
     );
     if (elementExists.length > 0) {

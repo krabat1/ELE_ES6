@@ -1,9 +1,11 @@
+import DOM from "../dom/dom.js";
+
 const Dialog = {
   showDialog(message, buttons = []) {
     // 1. Alaphelyzet: töröljük a korábbi gombokat a separator után
     // Feltételezzük, hogy a gombok a .separator.bottom után vannak
-    const dialog = document.getElementById("dialogView");
-    const separator = dialog.querySelector(".separator.bottom");
+    //const dialog = document.getElementById("dialogView");
+    const separator = DOM.dialog.querySelector(".separator.bottom");
 
     // Minden gombot eltávolítunk, ami a separator után van
     let nextSibling = separator.nextElementSibling;
@@ -14,7 +16,7 @@ const Dialog = {
     }
 
     // 2. Üzenet beállítása
-    dialog.querySelector("p").textContent = message;
+    DOM.dialog.querySelector("p").textContent = message;
 
     // 3. Új gombok létrehozása a tömbből
     buttons.forEach((btnConfig) => {

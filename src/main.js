@@ -13,6 +13,8 @@ import Deck from "./deck/deck.js";
 import API from "./api/api.js";
 import Security from "./security/security.js";
 import Descriptions from "./descriptions/descriptions.js";
+import DOM from "./dom/dom.js";
+import { showDOM } from "./dom/dom.js";
 // importok
 
 function loadStyles() {
@@ -30,21 +32,21 @@ async function loadApp() {
   const html = await response.text();
   document.getElementById("app").innerHTML = html;
 
-  login = document.querySelector("#login");
-  emailField = document.querySelector("#email");
-  passwordField = document.querySelector("#password");
-  loginBtn = document.querySelector("#loginBtn");
-  showPassInput = document.querySelector("#spw");
-  loginError = document.querySelector("#loginError");
-  home = document.getElementById("home");
-  switchView = document.getElementById("switchView");
-  dialog = document.getElementById("dialogView");
-  Dev.log(LT.INIT, "selectors ok");
+  DOM.login = document.querySelector("#login");
+  DOM.emailField = document.querySelector("#email");
+  DOM.passwordField = document.querySelector("#password");
+  DOM.loginBtn = document.querySelector('[data-action="login"]');
+  DOM.showPassInput = document.querySelector('[data-action="showPass"]');
+  DOM.loginError = document.querySelector("#loginError");
+  DOM.home = document.getElementById("home");
+  DOM.switchView = document.getElementById("switchView");
+  DOM.dialog = document.getElementById("dialogView");
+  showDOM()
   init();
 }
 
 // dom elemek
-let login,
+/*let login,
   emailField,
   passwordField,
   showPassInput,
@@ -52,13 +54,14 @@ let login,
   loginError,
   home,
   switchView,
-  dialog;
+  dialog;*/
 
 // event listenerek
 function initEventListeners() {
+  Dev.log(LT.INIT, "initEventListeners() fut");
   window.addEventListener('click', function(event){
 
-    //const action = event.target.dataset.action;
+    // const action = event.target.dataset.action;
     // Megkeressük a legközelebbi gombot, amin van 'data-action'
     const btn = event.target.closest('[data-action]');
 
@@ -68,148 +71,73 @@ function initEventListeners() {
     // Most már biztosan a gombtól kérjük le az adatokat
     const { action, id } = btn.dataset;
 
+    // CONFIRM
+
+    // ...itt épp nincs
+
+    // LOGIN
+
+    if (action === 'showPass') {
+      UI.showPass();
+    }
+
+    if (action === 'login') {
+      Auth.login(event);
+    }
+
+    // HOME (DECK-LIST)
+
+    if (action === 'openTake5') {
+      Deck.openTake5()
+    }
+
+    if (action === 'openFavs') {
+      Deck.openFavs()
+    }
+
+    if (action === 'logout') {
+      Auth.logout();
+    }
+
+    // DECK
+
+    if (action === 'backHome') {
+      backHome();
+    }
+
+    if (action === 'fakeRandom') {
+      Card.fakeRandom();
+    }
+
     if (action === 'loadDesc') {
-        const slug = switchView.querySelector('.grid').getAttribute('id');
-        Descriptions.loadDesc(slug)
+      const slug = switchView.querySelector('.grid').getAttribute('id');
+      Descriptions.loadDesc(slug)
     }
     
     if (action === 'closeDesc') {
-        Descriptions.closeDesc()
+      Descriptions.closeDesc()
     }
 
-  })
+    // DECK / FAVORITES
 
-
-  Dev.log(LT.INIT, "initEventListeners() fut");
-  showPassInput.onclick = () => {
-    UI.showPass();
-  };
-
-  loginBtn.onclick = async function (event) {
-    event.preventDefault();
-    Dev.log(LT.EVENT, "loginBtn.onclick");
-    let email = emailField.value.trim();
-    let password = passwordField.value.trim();
-    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    if (!email || !password) {
-      document.getElementById("loginError").textContent =
-        "\u2757 Kérlek töltsd ki mindkét mezőt.";
-      return;
+    if (action === 'removeFav') {
+      localStorage.setItem("favs", JSON.stringify([]));
+      DeckList.favsToDecks();
     }
-    document.getElementById("loginError").textContent =
-      "\uD83D\uDD0E Adatok ellenőrzése";
-    const allowed = await Auth.checkLogin(email, password, timeZone);
-    if (allowed) {
-      AppState.userEmail = email;
-      //hide("login");
-      UI.hideAll("home");
-      Nav.navToHistory("home", {});
-    } else {
-      Nav.navToHistory("login", {});
-      // A response hibaüzeneteit a checkLogin() kezeli!
-      //document.getElementById("loginError").textContent =
-      //  "\u274C Helytelen email vagy jelszó.";
+
+    // DECK / TAKE5
+  
+    if (action === 'newTakeFive') {
+      Deck.newTakeFive()
     }
-  };
 
-  document.getElementById("logOut").onclick = async (e) => {
-    Dev.log(LT.EVENT, `logOut.onclick`);
-    const token = localStorage.getItem(TOKEN_KEY);
-    if (token) {
-      try {
-        Dev.log(LT.AUTH, "accessAPI/logout");
-        const res = await fetch(
-          `${accessAPI}?action=logout&token=${encodeURIComponent(token)}`,
-        );
+    // CARD / CARD-TOP
 
-        const json = await res.json();
-        if (!json.success) {
-          Dev.log(
-            LT.API,
-            new Error(`accessAPI/logout (${json.error}) sikertelen`),
-          );
-          //console.error("logout API hiba:", json.error);
-        }
-      } catch (err) {
-        Dev.log(LT.API, new Error(`accessAPI/logout (${err}) sikertelen`));
-        //console.error("logout API hiba", err);
-      }
-    }
-    localStorage.removeItem(Auth.TOKEN_KEY);
-    localStorage.removeItem(Auth.TOKEN_EXP_KEY);
-    [emailField, passwordField, loginBtn].forEach((e) => {
-      e.disabled = false;
-    });
-    [emailField, passwordField].forEach((e) => {
-      e.value = "";
-    });
-    loginError.textContent = "\u2714\uFE0F  Kijelentkezés sikeres";
-    UI.hideAll("login");
-    Nav.navToHistory("login", {});
-  };
+    // CARD / CARD-BOTTOM
 
-  document.querySelector(".backHome").onclick = () => {
-    Dev.log(LT.EVENT, `backHome.onclick`);
-    // hide("deckView");
-    backHome();
-  };
+    // CARD / LEFT-RIGHT
 
-  switchView.querySelector(".randomCard").onclick = () => {
-    Dev.log(LT.EVENT, `randomCard.onclick`);
-    Card.fakeRandom();
-  };
-
-  document.getElementById("favoritesBtn").onclick = () => {
-    Dev.log(LT.EVENT, `favoritesBtn.onclick`);
-    UI.initView("switchView");
-    switchView.querySelector("h2").textContent = "";
-    Deck.openDeck("favs", "Kedvencek");
-  };
-
-  document.getElementById("dailyChallengeBtn").onclick = async () => {
-    Dev.log(LT.EVENT, `dailyChallengeBtn.onclick`);
-    UI.initView("switchView");
-    switchView.querySelector("h2").textContent = "";
-    Deck.openDeck("takeFive", "Napi Minikihívás");
-  };
-
-  switchView.querySelector(".newTakeFive").onclick = async () => {
-    Dev.log(LT.EVENT, `newTakeFive.onclick`);
-    switchView.querySelector(".newTakeFive").disabled = true;
-    let takeFive = JSON.parse(localStorage.getItem("takeFive") || "[]");
-    UI.initView("switchView", takeFive.length);
-    try {
-      Dev.log(LT.AUTH, "deckAPI/getRandomCards");
-      const res = await fetch(`${API.deckAPI}?action=getRandomCards&count=5`);
-      const json = await res.json();
-      Dev.log(LT.TAKE5, "takeFive JSON:", json);
-      if (!json.success) {
-        Dev.log(
-          LT.API,
-          new Error(`deckAPI/getRandomCards (${json.error}) sikertelen`),
-        );
-        //console.log("!json.success sajnos");
-        return false;
-      }
-      if (json.success) {
-        takeFive = json.data.cards;
-        localStorage.setItem("takeFive", JSON.stringify(takeFive));
-      } else {
-        switchView.querySelector(".newTakeFive").disabled = false;
-      }
-    } catch (err) {
-      (Dev.log(LT.DECKS, new Error(err)),
-        Dialog.showDialog("Hiba a deck-list betöltésénél."));
-      //console.log(err);
-      switchView.querySelector(".newTakeFive").disabled = false;
-    }
-    DeckList.takeFiveToDecks();
-  };
-
-  switchView.querySelector(".removeFav").onclick = () => {
-    localStorage.setItem("favs", JSON.stringify([]));
-    DeckList.favsToDecks();
-  };
+  });
 
   window.onpopstate = function (event) {
     if (!event.state || !event.state.index) {
@@ -274,7 +202,7 @@ function initEventListeners() {
         //ha nincs megnyitva a pakli
         if (AppState.currentDeck.slug !== event.state.deck_slug) {
           UI.initView("switchView");
-          switchView.querySelector("h2").textContent = "";
+          DOM.switchView.querySelector("h2").textContent = "";
           Dev.log(
             LT.NAV,
             "Másik deck ",
@@ -286,9 +214,9 @@ function initEventListeners() {
           Dev.log(LT.NAV, "Ugyanaz a deck ");
           UI.hideAll("switchView");
           if (
-            switchView.querySelector(".grid").classList.contains("cardView")
+            DOM.switchView.querySelector(".grid").classList.contains("cardView")
           ) {
-            switchView.querySelector(".grid").classList.remove("cardView");
+            DOM.switchView.querySelector(".grid").classList.remove("cardView");
           }
         }
       },
@@ -297,7 +225,7 @@ function initEventListeners() {
         //ha nincs megnyitva a pakli
         if (AppState.currentDeck.slug !== event.state.deck_slug) {
           UI.initView("switchView");
-          switchView.querySelector("h2").textContent = "";
+          DOM.switchView.querySelector("h2").textContent = "";
           Dev.log(
             LT.NAV,
             "Másik deck kártyája ",
@@ -310,7 +238,7 @@ function initEventListeners() {
           UI.hideAll("switchView");
           // ha nincs kártya megnyitva
           if (
-            !switchView.querySelector(".grid").classList.contains("cardView")
+            !DOM.switchView.querySelector(".grid").classList.contains("cardView")
           ) {
             Dev.log(LT.NAV, "Nincs kártya megnyitva");
             //switchView.querySelector('.grid').classList.add('cardView');
@@ -320,7 +248,7 @@ function initEventListeners() {
             });
           } else {
             Dev.log(LT.NAV, "Meg van nyitva kártya ");
-            switchView
+            DOM.switchView
               .querySelector(`[data-card-number="${event.state.cardNumber}"]`)
               .scrollIntoView({
                 behavior: "smooth",
@@ -340,11 +268,11 @@ function initEventListeners() {
 // ui?
 function backHome(pushToHistory = true) {
   UI.hideAll("home");
-  switchView.querySelector(".grid").removeAttribute("id");
+  DOM.switchView.querySelector(".grid").removeAttribute("id");
   pushToHistory
     ? Nav.navToHistory("home", {})
     : Dev.log(LT.NAV, "no pushToHistory");
-  switchView.querySelector(".grid").classList.remove("cardView");
+  DOM.switchView.querySelector(".grid").classList.remove("cardView");
   AppState.currentDeck = [];
   //console.log(AppState);
 }
@@ -354,12 +282,12 @@ function backHome(pushToHistory = true) {
 
 async function init() {
   Dev.log(LT.INIT, "init() fut");
-  [emailField, passwordField, loginBtn].forEach((e) => {
+  [DOM.emailField, DOM.passwordField, DOM.loginBtn].forEach((e) => {
     e.disabled = true;
   });
   Nav.navToHistory("login", {});
   //timeZoneField.value = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  loginError.textContent = "\u231B Bejelentkezés ellenőrzése...";
+  DOM.loginError.textContent = "\u231B Bejelentkezés ellenőrzése...";
   Dev.log(LT.INIT, "deckek betöltése");
   DeckList.loadDecks(); // gyorsabb ha már most
   await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -372,7 +300,7 @@ async function init() {
     Dev.log(LT.INIT, "deckek betöltve?", AppState.decks.length > 0);
   } else {
     // mutasd a login modalt/formot
-    [emailField, passwordField, loginBtn].forEach((e) => {
+    [DOM.emailField, DOM.passwordField, DOM.loginBtn].forEach((e) => {
       e.disabled = false;
     });
     UI.hideAll("login");
