@@ -682,6 +682,15 @@
         lemonchiffon 50vw
       );
     }
+    #switchView #cel_eleres.grid.cardView {
+      background: repeating-linear-gradient(
+        90deg,
+        papayawhip,
+        papayawhip 25vw,
+        lemonchiffon 25vw,
+        lemonchiffon 50vw
+      );
+    }
 
     /*
     * Dialog

@@ -149,7 +149,8 @@ function initEventListeners() {
     // CARD / CARD-BOTTOM
 
     if (action === 'showCard'){
-      const j = event.target.dataset.j
+      const j = event.target.parentNode.dataset.j
+      //console.log(event.target)
       Deck.showCardNew({
         pushToHistory: true,
         cardNumber: j /*, cardData:cardData*/,

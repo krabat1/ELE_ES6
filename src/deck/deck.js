@@ -180,6 +180,7 @@ const Deck = {
 
       const cardImg = document.createElement("img");
       cardImg.className = "cardimg";
+      cardImg.dataset.cardData = JSON.stringify(cardData);
       cardImg.setAttribute("src", cardData.imageUrl);
       cardImg.setAttribute("alt", cardData.title);
       cardImg.onload = function (event) {
@@ -251,6 +252,7 @@ const Deck = {
             container: "all",
           });
       } else {
+        Dev.log(LT.DECK, 'no cardNumber', arguments)
         pushToHistory
           ? Nav.navToHistory("card", {
               deck_slug: AppState.currentDeck.slug,
@@ -260,11 +262,12 @@ const Deck = {
             })
           : Dev.log(LT.NAV, "no pushToHistory");
       }
-      AppState.currentCard = JSON.parse(
-        DOM.switchView.querySelector(`[data-card-number="${cardNumber}"] .cardimg`)
-          .dataset.cardData,
-      );
-      //console.log('currentCard',currentCard.title);
+
+      let currentCardElem = DOM.switchView.querySelector(`[data-card-number="${cardNumber}"] .cardimg`)
+      //console.log('currentCardElem',currentCardElem)   
+      let currentCardElemData = currentCardElem.dataset.cardData
+      AppState.currentCard = JSON.parse(currentCardElemData);
+      //console.log('currentCard',AppState.currentCard.title);
     }
   },
   removeRemoveFavButton(){
