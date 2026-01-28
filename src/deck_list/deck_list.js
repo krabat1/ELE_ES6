@@ -9,6 +9,14 @@ import DOM from "../dom/dom.js";
 
 const DeckList = {
 
+  favs_base:{
+
+  },
+  take5_base:{
+    
+  },
+
+
   /**
    * Ez kell egyáltalán?
    */

@@ -148,5 +148,35 @@ const Card = {
     event.target.closest(".fav-close").classList.remove("show-trash");
     DeckList.favsToDecks();
   },
+  prevCard(i,k){
+    DOM.switchView.querySelector(`[data-card-number="${k}"]`).scrollIntoView({
+      behavior: "smooth",
+      block: "center",
+      inline: "center",
+      container: "all",
+    });
+    AppState.currentCard = AppState.currentDeck.cards[i - 2];
+    Nav.navToHistory("card", {
+      deck_slug: AppState.currentDeck.slug,
+      deck_niceText: AppState.currentDeck.niceText,
+      cardNumber: k,
+      sign: "prevC",
+    });
+  },
+  nextCard(i,k){
+    DOM.switchView.querySelector(`[data-card-number="${k}"]`).scrollIntoView({
+      behavior: "smooth",
+      block: "center",
+      inline: "center",
+      container: "all",
+    });
+    AppState.currentCard = AppState.currentDeck.cards[i];
+    Nav.navToHistory("card", {
+      deck_slug: AppState.currentDeck.slug,
+      deck_niceText: AppState.currentDeck.niceText,
+      cardNumber: k,
+      sign: "nextC",
+    });
+  }
 };
 export default Card;

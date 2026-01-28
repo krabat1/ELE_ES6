@@ -13,19 +13,18 @@
     }*/
 
     .header {
-      /*KELL*/
       text-align: center;
       padding: 1rem;
       background: #fff;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       margin-bottom: 1rem;
     }
-    h1, /*KELL*/
+    h1, 
     h2,
     h3 {
       margin: 0.2rem 0;
     }
-    #login, /*KELL*/
+    #login,
     #home,
     #deckView,
     #cardView {
@@ -36,7 +35,6 @@
       z-index: 10;
     }
     button {
-      /*KELL*/
       padding: 0.5rem 1rem;
       margin: 0.5rem;
       cursor: pointer;
@@ -422,11 +420,11 @@
       }
     }
 
-    #cardImage {
+    /*#cardImage {
       min-width: 28cqw;
       max-height: calc(100vh - 5.6rem);
       padding: 4.75% !important;
-    }
+    }*/
 
     .grid .card.loading,
     #cardView .card-container.loading {
@@ -475,6 +473,19 @@
     #favs.grid:empty:after {
       content: "Nincsenek kedvenceid, válassz egy paklit, kattints egy kártyára, és kattints a felette lévő \2764\FE0F  ikonra!";
       font-size: 1.3rem;
+    }
+
+    #takeFive.grid:empty:after {
+      content: "Kis türelmet, mindjárt húzunk neked 5 kártyát...";
+      font-size: 1.3rem;
+    }
+
+    #switchView h2:empty{
+      opacity: 0;
+    }
+    #switchView h2{
+      opacity: 1;
+      transition: opacity 0.2s linear;
     }
 
     #switchView .grid:not(.cardView) {

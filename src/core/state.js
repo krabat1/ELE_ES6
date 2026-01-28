@@ -1,12 +1,10 @@
 const AppState = {
   userEmail: "",
   decks: [],
-  currentDeck: [],
-  currentDeckSlug: "",
+  currentDeck: {},
   currentCard: {},
   currentStock: [],
   currentWaste: [],
-  currentDeckTitle: "",
 };
 
 export default AppState;

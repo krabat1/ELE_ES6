@@ -12,21 +12,14 @@ import DOM from "../dom/dom.js";
 
 const Deck = {
   async openDeck(deck_slug, deck_niceText) {
-    //currentDeckSlug = deck_slug;
     DOM.switchView.querySelector(".grid").setAttribute("id", deck_slug);
     if (deck_slug === "takeFive") {
-      //switchView.querySelector(".newTakeFive").removeAttribute("style");
       this.removeNewTake5Buttons()
       this.addNewTake5Button()
     } else {
-      //switchView
-      //  .querySelector(".newTakeFive")
-      //  .setAttribute("style", "display: none;");
       this.removeNewTake5Buttons()
     }
     if (deck_slug === "favs") {
-      //switchView.querySelector(".removeFav").removeAttribute("style");
-
       this.removeRemoveFavButton()
 
       const removeFavButton = document.createElement('button')
@@ -34,28 +27,15 @@ const Deck = {
       removeFavButton.dataset.action = 'removeFav'
       removeFavButton.innerText = 'Kedvencek törlése'
       DOM.switchView.querySelector("#topActions").appendChild(removeFavButton);
-
     } else {
-      //switchView
-      //  .querySelector(".removeFav")
-      //  .setAttribute("style", "display: none;");
       this.removeRemoveFavButton()
     }
-    // ez már az új
     Descriptions.removeButtons();
-
-    // régi gomb
-    //switchView
-    //  .querySelector(".description")
-    //  .setAttribute("style", "display: none;");
 
     // nézzük meg a decks objektumot, nincs e már benne,
     // ha benne van ne töltsük be újra, hanem dolgozzunk abból,
     // ha nincs benne töltsük be, mentsük a decksbe és dolgozzunk abból.
     const downloaded = AppState.decks.some((deck) => {
-      //if(deck.slug !== deck_slug){console.log('-slug',deck.slug,deck_slug)}
-      //else{console.log('+slug',deck.slug,deck_slug)}
-      //if(deck.hasOwnProperty('cards')){console.log('van cards')}
       return deck.slug === deck_slug && deck.hasOwnProperty("cards");
     });
     //console.log("downloaded", downloaded);
@@ -91,8 +71,6 @@ const Deck = {
            * AppState.decks[index] = deck;
            */
           AppState.decks[index].cards = deck.cards;
-
-          //innen
         }
       }
     }
@@ -107,44 +85,34 @@ const Deck = {
       );
       if (elementExists.length === 0) {
         Descriptions.addButton();
-
-        // <button class="blue description" id="description2">Leírás</button>
-
-        // régi gomb
-        //switchView.querySelector(".description").removeAttribute("style");
-        //switchView.querySelector(".description").onclick = () => {
-        //  window.open(AppState.decks[index].descLink, "_blank");
-        //};
       }
     } else if (AppState.decks[index].descLink === "") {
       Descriptions.removeButtons();
     }
 
     UI.initView("switchView", AppState.decks[index].cards.length);
-    //window.history.replaceState({ step: 'deck' }, "");
-    //whatState()
-    //console.log("openDeck pushState: deck");
 
-    //currentDeck = decks[index].cards;
     AppState.currentDeck = AppState.decks[index];
     AppState.currentStock = [];
     AppState.currentWaste = [];
 
     DOM.switchView.querySelector("h2").textContent = deck_niceText;
-    //currentDeckTitle = deck_niceText;
-    AppState.currentDeckTitle = AppState.currentDeck.niceText;
 
     // kedvencekben van-e? megállapításához
     let favs = JSON.parse(localStorage.getItem("favs") || "[]");
 
     Dev.log(LT.DECK, `create >deck< DOM elements (cards)`);
+
+    if( deck_slug === 'takeFive' && AppState.currentDeck.cards.length === 0){
+      Deck.newTakeFive();
+    }
+    
     for (let i = 1; i <= AppState.currentDeck.cards.length; i++) {
       let j = i.toString();
       if (j < 10) {
         j = j.padStart(2, "0");
       }
       const cardData = AppState.currentDeck.cards[i - 1];
-      //console.log('x',cardData);
       const cardHolder = document.createElement("div");
       cardHolder.dataset.cardNumber = j;
       cardHolder.className = "card loading";
@@ -157,22 +125,9 @@ const Deck = {
         if (k < 10) {
           k = k.padStart(2, "0");
         }
-        prev.onclick = (e) => {
-          DOM.switchView.querySelector(`[data-card-number="${k}"]`).scrollIntoView({
-            behavior: "smooth",
-            block: "center",
-            inline: "center",
-            container: "all",
-          });
-          AppState.currentCard = AppState.currentDeck.cards[i - 2];
-          Nav.navToHistory("card", {
-            deck_slug: AppState.currentDeck.slug,
-            deck_niceText: AppState.currentDeck.niceText,
-            cardNumber: k,
-            sign: "prevC",
-          });
-          //console.log('currentCard',currentCard.title)
-        };
+        prev.dataset.action = 'prevCard'
+        prev.dataset.k = k
+        prev.dataset.i = i
       }
       cardHolder.appendChild(prev);
 
@@ -183,13 +138,8 @@ const Deck = {
       const favClose = document.createElement("div");
       favClose.className = "fav-close";
       if (favs.some((fav) => fav.internalID === cardData.internalID)) {
-        //console.log('A kártya már a kedvencekben van')
-        //cardHolder.querySelector(".fav-close").classList.add("show-trash");
         favClose.classList.add("show-trash");
-      } else {
-        //console.log('A kártya nincs a kedvencekben')
-        //cardHolder.querySelector(".fav-close").classList.remove("show-trash");
-      }
+      } 
 
       const trash = document.createElement("span");
       const fav = document.createElement("span");
@@ -210,18 +160,11 @@ const Deck = {
       random.appendChild(document.createElement("span"));
       close.appendChild(document.createElement("span"));
 
-      trash.onclick = function (event) {
-        Card.favToTrash(event);
-      };
-      fav.onclick = function (event) {
-        Card.addToFavs(event);
-      };
-      random.onclick = function (event) {
-        Card.fakeRandom();
-      };
-      close.onclick = (event) => {
-        this.showCardNew({ pushToHistory: true, cardNumber: j });
-      };
+      trash.dataset.action = 'favToTrash'
+      fav.dataset.action = 'addToFavs'
+      random.dataset.action = 'fakeRandom'
+      close.dataset.action = 'closeCard'
+      close.dataset.j = j
 
       favClose.appendChild(trash);
       favClose.appendChild(fav);
@@ -232,12 +175,9 @@ const Deck = {
 
       const cardBottom = document.createElement("div");
       cardBottom.className = "cardBottom";
-      cardBottom.onclick = (event) => {
-        this.showCardNew({
-          pushToHistory: true,
-          cardNumber: j /*, cardData:cardData*/,
-        });
-      };
+      cardBottom.dataset.action = 'showCard'
+      cardBottom.dataset.j = j
+
       const cardImg = document.createElement("img");
       cardImg.className = "cardimg";
       cardImg.setAttribute("src", cardData.imageUrl);
@@ -245,11 +185,7 @@ const Deck = {
       cardImg.onload = function (event) {
         DeckList.handleImageLoad(event.target);
       };
-      //cardImg.setAttribute('data-card-data', JSON.stringify(cardData).replace(/"/g, "&quot;"))
-      cardImg.dataset.cardData = JSON.stringify(cardData) /*.replace(
-        /"/g,
-        "&quot;"
-      )*/;
+      cardImg.dataset.cardData = JSON.stringify(cardData) 
       const protect = document.createElement("div");
       protect.className = "protect";
       cardBottom.appendChild(cardImg);
@@ -265,129 +201,13 @@ const Deck = {
         if (k < 10) {
           k = k.padStart(2, "0");
         }
-        next.onclick = (e) => {
-          DOM.switchView.querySelector(`[data-card-number="${k}"]`).scrollIntoView({
-            behavior: "smooth",
-            block: "center",
-            inline: "center",
-            container: "all",
-          });
-          AppState.currentCard = AppState.currentDeck.cards[i];
-          Nav.navToHistory("card", {
-            deck_slug: AppState.currentDeck.slug,
-            deck_niceText: AppState.currentDeck.niceText,
-            cardNumber: k,
-            sign: "nextC",
-          });
-          //console.log('currentCard',currentCard.title)
-        };
+        next.dataset.action = 'nextCard'
+        next.dataset.k = k
+        next.dataset.i = i
       }
+
       cardHolder.appendChild(next);
-      //Dev.log(LT.DECK, 'cardHolder', cardHolder)
-
-      /*cardHolder.innerHTML = `
-          	<div class="prev">
-      </div>
-          	<div class="cardMiddle">
-            	<div class="cardTop">
-                	<div class="fav-close">
-          <span class="trash" id="trashCard" title="Törlés a kedvencekből"><span></span></span>
-          <span class="fav" id="favCard" title="Hozzáadás a kedvencekhez"><span></span></span>
-          <span class="random" id="randomCard" title="Húzok egy kártyát"><span></span></span>
-          <span class="close" id="closeCard" title="Bezárás"><span></span></span>
-      </div>
-
-      </div>
-            	<div class="cardBottom">
-                  <img class="cardimg" src="${cardData.imageUrl}" alt="${cardData.title}" data-card-data="${JSON.stringify(cardData).replace(/"/g, "&quot;")}" onload="handleImageLoad(this);">
-                  <div class="protect"></div>
-      </div>
-      </div>
-          	<div class="next">
-      </div>
-            `;*/
-
-      /*cardHolder.querySelector(".cardBottom").onclick = () => {
-        showCardNew({
-          pushToHistory: true,
-          cardNumber: j,
-        });
-        console.log("showCardNew", j);
-      };*/
-
-      /*if (i > 1 && !isTouchDevice) {
-        cardHolder.querySelector(".prev").classList.add("on");
-        let k = (i - 1).toString();
-        if (k < 10) {
-          k = k.padStart(2, "0");
-        }
-        cardHolder.querySelector(".prev").onclick = (e) => {
-          switchView.querySelector(`[data-card-number="${k}"]`).scrollIntoView({
-            behavior: "smooth",
-            block: "center",
-            inline: "center",
-            container: "all",
-          });
-          currentCard = currentDeck.cards[i - 2];
-          navToHistory("card", {
-            deck_slug: currentDeck.slug,
-            deck_niceText: currentDeck.niceText,
-            cardNumber: k,
-            sign: "prevC",
-          });
-          //console.log('currentCard',currentCard.title)
-        };
-      }*/
-      /*if (i < AppState.currentDeck.cards.length && !isTouchDevice) {
-        cardHolder.querySelector(".next").classList.add("on");
-        let k = (i + 1).toString();
-        if (k < 10) {
-          k = k.padStart(2, "0");
-        }
-        cardHolder.querySelector(".next").onclick = (e) => {
-          switchView.querySelector(`[data-card-number="${k}"]`).scrollIntoView({
-            behavior: "smooth",
-            block: "center",
-            inline: "center",
-            container: "all",
-          });
-          currentCard = currentDeck.cards[i];
-          navToHistory("card", {
-            deck_slug: currentDeck.slug,
-            deck_niceText: currentDeck.niceText,
-            cardNumber: k,
-            sign: "nextC",
-          });
-          //console.log('currentCard',currentCard.title)
-        };
-      }*/
-      // kedvencekben van-e?
-      /*let favs = JSON.parse(localStorage.getItem("favs") || "[]");
-
-      if (favs.some((fav) => fav.internalID === cardData.internalID)) {
-        //console.log('A kártya már a kedvencekben van')
-        cardHolder.querySelector(".fav-close").classList.add("show-trash");
-      } else {
-        //console.log('A kártya nincs a kedvencekben')
-        cardHolder.querySelector(".fav-close").classList.remove("show-trash");
-      }*/
-
-      /*cardHolder.querySelector(".close").onclick = () => {
-        showCardNew({ pushToHistory: true, cardNumber: j });
-      };
-      cardHolder.querySelector(".fav").onclick = (event) => {
-        addToFavs(event);
-      };
-      cardHolder.querySelector(".random").onclick = (event) => {
-        fakeRandom();
-      };
-      cardHolder.querySelector(".trash").onclick = (event) => {
-        favToTrash(event);
-      };*/
       DOM.switchView.querySelector(".grid").appendChild(cardHolder);
-
-      //teszt
-      //switchView.querySelector('.grid').classList.add('cardView');
     }
     Dev.log(
       LT.DECK,

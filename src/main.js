@@ -133,9 +133,41 @@ function initEventListeners() {
 
     // CARD / CARD-TOP
 
+    if (action === 'favToTrash') {
+      Card.favToTrash(event);
+    }
+    if (action === 'addToFavs') {
+      Card.addToFavs(event);
+    }
+    if (action === 'fakeRandom') {
+      Card.fakeRandom();
+    }
+    if (action === 'closeCard') {
+      Deck.showCardNew({ pushToHistory: true, cardNumber: event.target.dataset.j });
+    }
+
     // CARD / CARD-BOTTOM
 
+    if (action === 'showCard'){
+      const j = event.target.dataset.j
+      Deck.showCardNew({
+        pushToHistory: true,
+        cardNumber: j /*, cardData:cardData*/,
+      });
+    }
+
     // CARD / LEFT-RIGHT
+
+    if (action === 'prevCard') {
+      let i = event.target.dataset.i
+      let k = event.target.dataset.k
+      Card.prevCard(i,k)
+    }
+    if (action === 'nextCard') {
+      let i = event.target.dataset.i
+      let k = event.target.dataset.k
+      Card.nextCard(i,k)
+    }
 
   });
 
