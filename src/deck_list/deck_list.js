@@ -8,7 +8,7 @@ import Deck from "../deck/deck.js";
 import DOM from "../dom/dom.js";
 
 const DeckList = {
-
+  /* ITT TARTASZ  Object.assign()*/
   favs_base:{
 
   },

@@ -1,3 +1,4 @@
+@import "from_blogger.css";
 @layer post {
   /*@import url("https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap");*/
 
@@ -385,6 +386,7 @@
         span {
           background-image: var(--heart);
           filter: saturate(1.5);
+          background-repeat: no-repeat;
         }
       }
       .random {
@@ -393,6 +395,7 @@
           background-image: var(--cube);
           zoom: 1.4;
           background-position: center;
+          background-repeat: no-repeat;
         }
       }
       .close {
@@ -400,6 +403,7 @@
         span {
           background-image: var(--close);
           zoom: 1.4;
+          background-repeat: no-repeat;
         }
       }
       .trash {
@@ -416,6 +420,7 @@
         span {
           background-image: var(--broken);
           filter: saturate(1.5);
+          background-repeat: no-repeat;
         }
       }
     }
