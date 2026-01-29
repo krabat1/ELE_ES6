@@ -148,7 +148,7 @@ const Card = {
     event.target.closest(".fav-close").classList.remove("show-trash");
     DeckList.favsToDecks();
   },
-  prevCard(i,k){
+  prevCard(i,k,e){
     DOM.switchView.querySelector(`[data-card-number="${k}"]`).scrollIntoView({
       behavior: "smooth",
       block: "center",
@@ -156,6 +156,8 @@ const Card = {
       container: "all",
     });
     AppState.currentCard = AppState.currentDeck.cards[i - 2];
+    DOM.currentCard = e.target.closest('.card').previousElementSibling
+    Dev.log(LT.CARD, 'DOM.currentCard', DOM.currentCard)
     Nav.navToHistory("card", {
       deck_slug: AppState.currentDeck.slug,
       deck_niceText: AppState.currentDeck.niceText,
@@ -163,7 +165,7 @@ const Card = {
       sign: "prevC",
     });
   },
-  nextCard(i,k){
+  nextCard(i,k,e){
     DOM.switchView.querySelector(`[data-card-number="${k}"]`).scrollIntoView({
       behavior: "smooth",
       block: "center",
@@ -171,6 +173,8 @@ const Card = {
       container: "all",
     });
     AppState.currentCard = AppState.currentDeck.cards[i];
+    DOM.currentCard = e.target.closest('.card').nextElementSibling
+    Dev.log(LT.CARD, 'DOM.currentCard', AppState.currentCard ,DOM.currentCard)
     Nav.navToHistory("card", {
       deck_slug: AppState.currentDeck.slug,
       deck_niceText: AppState.currentDeck.niceText,

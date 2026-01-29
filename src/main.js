@@ -143,17 +143,19 @@ function initEventListeners() {
       Card.fakeRandom();
     }
     if (action === 'closeCard') {
-      Deck.showCardNew({ pushToHistory: true, cardNumber: event.target.dataset.j });
+      const cardNumber = event.target.closest('[data-card-number]').dataset.cardNumber
+      Deck.showCardNew({ pushToHistory: true, cardNumber: cardNumber });
     }
 
     // CARD / CARD-BOTTOM
 
     if (action === 'showCard'){
-      const j = event.target.parentNode.dataset.j
-      //console.log(event.target)
+      //const j = event.target.parentNode.dataset.j
+      const cardNumber = event.target.closest('[data-card-number]').dataset.cardNumber
+      Dev.log(LT.EVENT, 'cardNumber', {cardNumber})
       Deck.showCardNew({
         pushToHistory: true,
-        cardNumber: j /*, cardData:cardData*/,
+        cardNumber: cardNumber /*, cardData:cardData*/,
       });
     }
 
@@ -162,12 +164,12 @@ function initEventListeners() {
     if (action === 'prevCard') {
       let i = event.target.dataset.i
       let k = event.target.dataset.k
-      Card.prevCard(i,k)
+      Card.prevCard(i,k,event)
     }
     if (action === 'nextCard') {
       let i = event.target.dataset.i
       let k = event.target.dataset.k
-      Card.nextCard(i,k)
+      Card.nextCard(i,k,event)
     }
 
   });
@@ -203,7 +205,7 @@ function initEventListeners() {
           text: "Igen",
           onclick: function () {
             Nav.navToHistory("login", {}); // forward stack levágása
-            dialog.close();
+            DOM.dialog.close();
             window.history.go(-3); // Tényleges kilépés az előzményekből
           },
         };
@@ -212,7 +214,7 @@ function initEventListeners() {
           onclick: function () {
             // Visszaugrunk a HOME-ra, hogy legyen hova újra visszalépni
             //window.history.replaceState({ step: 'home' }, "");
-            dialog.close();
+            DOM.dialog.close();
           },
         };
 
@@ -224,7 +226,7 @@ function initEventListeners() {
       login: () => {
         //console.log(`X ${event.state.stack}`)
         UI.hideAll("login");
-        dialog.close();
+        DOM.dialog.close();
       },
       home: () => {
         //console.log(`X ${event.state.stack}`);

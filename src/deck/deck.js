@@ -222,6 +222,7 @@ const Deck = {
     pushToHistory = true,
     cardNumber = undefined /*, cardData = {}*/,
   }) {
+    if (!cardNumber) Dev.log(LT.DECK, new Error('cardNumber'), {cardNumber})
     if (DOM.switchView.querySelector(".grid").classList.contains("cardView")) {
       DOM.switchView.querySelector(".grid").classList.remove("cardView");
       pushToHistory
@@ -231,6 +232,7 @@ const Deck = {
           })
         : Dev.log(LT.DECK, "no pushToHistory");
       AppState.currentCard = {};
+      DOM.currentCard = null;
     } else {
       DOM.switchView.querySelector(".grid").classList.add("cardView");
       if (cardNumber) {
@@ -268,6 +270,8 @@ const Deck = {
       let currentCardElemData = currentCardElem.dataset.cardData
       AppState.currentCard = JSON.parse(currentCardElemData);
       //console.log('currentCard',AppState.currentCard.title);
+      DOM.currentCard = currentCardElem.closest('.card');
+      Dev.log(LT.DOM, 'DOM.currentCard', DOM.currentCard)
     }
   },
   removeRemoveFavButton(){

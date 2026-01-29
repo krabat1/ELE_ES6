@@ -10,10 +10,16 @@ import DOM from "../dom/dom.js";
 const DeckList = {
   /* ITT TARTASZ  Object.assign()*/
   favs_base:{
-
+    slug: "favs",
+    imageUrl: "",
+    niceText: "Kedvencek",
+    descLink: "",
   },
   take5_base:{
-    
+    slug: "takeFive",
+    imageUrl: "",
+    niceText: "Napi Minikihívás",
+    descLink: "",     
   },
 
 
@@ -137,21 +143,25 @@ const DeckList = {
       // itt belemegy a napi minikihívás meg a kedvencek, ha lesz
       Dev.log(LT.DECKS, "takeFive & favs --> AppState.decks")
       let favs = JSON.parse(localStorage.getItem("favs") || "[]");
-      AppState.decks.push({
+      this.favs_base.cards = favs;
+      AppState.decks.push(this.favs_base);
+      /*AppState.decks.push({
         slug: "favs",
         imageUrl: "",
         niceText: "Kedvencek",
         descLink: "",
         cards: favs,
-      });
+      });*/
       let takeFive = JSON.parse(localStorage.getItem("takeFive") || "[]");
-      AppState.decks.push({
+      this.take5_base.cards = takeFive;
+      AppState.decks.push(this.take5_base);
+      /*AppState.decks.push({
         slug: "takeFive",
         imageUrl: "",
         niceText: "Napi Minikihívás",
         descLink: "",
         cards: takeFive,
-      });
+      });*/
     } catch (err) {
       Dialog.showDialog("Hiba a deck-list betöltésénél.");
       Dev.log(LT.DECKS, new Error(`Hiba a deck-list betöltésénél.`), err)

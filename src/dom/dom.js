@@ -13,6 +13,7 @@ const DOM = {
   home: null,
   switchView: null,
   dialog: null,
+  currentCard: null,
 };
 export function showDOM(){
   const domElements = Object.keys(DOM);
