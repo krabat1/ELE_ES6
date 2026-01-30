@@ -231,8 +231,9 @@ const Deck = {
             deck_niceText: AppState.currentDeck.niceText,
           })
         : Dev.log(LT.DECK, "no pushToHistory");
-      AppState.currentCard = {};
-      DOM.currentCard = null;
+      //AppState.currentCard = {};
+      //DOM.currentCard = null;
+      Card.setCurrentCard(null,'showCardNew() - reset')
     } else {
       DOM.switchView.querySelector(".grid").classList.add("cardView");
       if (cardNumber) {
@@ -266,12 +267,11 @@ const Deck = {
       }
 
       let currentCardElem = DOM.switchView.querySelector(`[data-card-number="${cardNumber}"] .cardimg`)
-      //console.log('currentCardElem',currentCardElem)   
-      let currentCardElemData = currentCardElem.dataset.cardData
-      AppState.currentCard = JSON.parse(currentCardElemData);
-      //console.log('currentCard',AppState.currentCard.title);
-      DOM.currentCard = currentCardElem.closest('.card');
-      Dev.log(LT.DOM, 'DOM.currentCard', DOM.currentCard)
+      //let currentCardElemData = currentCardElem.dataset.cardData
+      //AppState.currentCard = JSON.parse(currentCardElemData);
+      //DOM.currentCard = currentCardElem.closest('.card');
+      Card.setCurrentCard(currentCardElem, 'showCardNew() - reset')
+      //Dev.log(LT.DOM, 'DOM.currentCard', DOM.currentCard)
     }
   },
   removeRemoveFavButton(){

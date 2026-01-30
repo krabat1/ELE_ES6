@@ -73,10 +73,11 @@ const Card = {
         //showCard(currentDeck[randomNum]);
         AppState.currentStock.splice(randomNum, 1);
         AppState.currentWaste.push(randomNum);
-        AppState.currentCard = JSON.parse(
-          DOM.switchView.querySelector(`[data-card-number="${k}"] .cardimg`).dataset
-            .cardData,
-        );
+        //AppState.currentCard = JSON.parse(
+        //  DOM.switchView.querySelector(`[data-card-number="${k}"] .cardimg`).dataset
+        //    .cardData,
+        //);
+        this.setCurrentCard(DOM.switchView.querySelector(`[data-card-number="${k}"]`), 'fakeRandom()');
       }
       Dev.log(
         LT.CARD,
@@ -155,9 +156,11 @@ const Card = {
       inline: "center",
       container: "all",
     });
-    AppState.currentCard = AppState.currentDeck.cards[i - 2];
-    DOM.currentCard = e.target.closest('.card').previousElementSibling
-    Dev.log(LT.CARD, 'DOM.currentCard', DOM.currentCard)
+    this.setCurrentCard(e.target.closest('.card').previousElementSibling, 'prev_card')
+    //AppState.currentCard = AppState.currentDeck.cards[i - 2];
+    //DOM.currentCard = e.target.closest('.card').previousElementSibling
+
+    //Dev.log(LT.CARD, 'DOM.currentCard', DOM.currentCard)
     Nav.navToHistory("card", {
       deck_slug: AppState.currentDeck.slug,
       deck_niceText: AppState.currentDeck.niceText,
@@ -172,15 +175,26 @@ const Card = {
       inline: "center",
       container: "all",
     });
-    AppState.currentCard = AppState.currentDeck.cards[i];
-    DOM.currentCard = e.target.closest('.card').nextElementSibling
-    Dev.log(LT.CARD, 'DOM.currentCard', AppState.currentCard ,DOM.currentCard)
+    this.setCurrentCard(e.target.closest('.card').nextElementSibling, 'next card')
+    //AppState.currentCard = AppState.currentDeck.cards[i];
+    //DOM.currentCard = e.target.closest('.card').nextElementSibling
+    //Dev.log(LT.CARD, 'DOM.currentCard', AppState.currentCard ,DOM.currentCard)
     Nav.navToHistory("card", {
       deck_slug: AppState.currentDeck.slug,
       deck_niceText: AppState.currentDeck.niceText,
       cardNumber: k,
       sign: "nextC",
     });
-  }
+  },
+  setCurrentCard(el, from){
+    if(el === null){
+      AppState.currentCard = {};
+      DOM.currentCard = null;
+    }
+    DOM.currentCard = el;
+    //AppState.currentCard = el.closest("[data-card-data]").dataset.cardData;
+    AppState.currentCard = el.querySelector('.cardimg').dataset.cardData;
+    Dev.log(LT.CARD, `setCurrentCard(): ${from}`, DOM.currentCard, AppState.currentCard)
+  },
 };
 export default Card;

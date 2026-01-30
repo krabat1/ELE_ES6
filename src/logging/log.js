@@ -16,6 +16,7 @@ const LT = {
   AUTH: "auth",
   ERROR: "error",
   DOM: "dom",
+  OBSERVE: "observe",
 };
 
 const Logging = {
@@ -46,6 +47,7 @@ const Logging = {
     auth: 2,
     error: 2,
     dom: 2,
+    observe: 2,
   },
 
   log(category, message, ...details) {

@@ -15,7 +15,10 @@ import Security from "./security/security.js";
 import Descriptions from "./descriptions/descriptions.js";
 import DOM from "./dom/dom.js";
 import { showDOM } from "./dom/dom.js";
+import Observe from "./observer/observer.js";
 // importok
+
+
 
 function loadStyles() {
   Dev.log(LT.INIT, "loadStyles() fut");
@@ -298,6 +301,7 @@ function initEventListeners() {
     actions[event.state.stack]();
   };
   Security.initSecurityListeners();
+  Observe.startMutationObserve();
 }
 
 // ui?
