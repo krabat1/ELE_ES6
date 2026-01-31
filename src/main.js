@@ -165,14 +165,12 @@ function initEventListeners() {
     // CARD / LEFT-RIGHT
 
     if (action === 'prevCard') {
-      let i = event.target.dataset.i
-      let k = event.target.dataset.k
-      Card.prevCard(i,k,event)
+      let prevCardNumber = event.target.dataset.prevCardNumber
+      Card.prevCard(prevCardNumber,event)
     }
     if (action === 'nextCard') {
-      let i = event.target.dataset.i
-      let k = event.target.dataset.k
-      Card.nextCard(i,k,event)
+      let nextCardNumber = event.target.dataset.nextCardNumber
+      Card.nextCard(nextCardNumber,event)
     }
 
   });

@@ -108,26 +108,27 @@ const Deck = {
     }
     
     for (let i = 1; i <= AppState.currentDeck.cards.length; i++) {
-      let j = i.toString();
-      if (j < 10) {
-        j = j.padStart(2, "0");
+      let cardIndex = i - 1;
+
+      let cardNumber = i.toString();
+      if (cardNumber < 10) {
+        cardNumber = cardNumber.padStart(2, "0");
       }
-      const cardData = AppState.currentDeck.cards[i - 1];
+      const cardData = AppState.currentDeck.cards[cardIndex];
       const cardHolder = document.createElement("div");
-      cardHolder.dataset.cardNumber = j;
+      cardHolder.dataset.cardNumber = cardNumber;
       cardHolder.className = "card loading";
 
       const prev = document.createElement("div");
       prev.className = "prev";
       if (i > 1 && !isTouchDevice) {
         prev.classList.add("on");
-        let k = (i - 1).toString();
-        if (k < 10) {
-          k = k.padStart(2, "0");
+        let prevCardNumber = (i - 1).toString(); // k
+        if (prevCardNumber < 10) {
+          prevCardNumber = prevCardNumber.padStart(2, "0");
         }
         prev.dataset.action = 'prevCard'
-        prev.dataset.k = k
-        prev.dataset.i = i
+        prev.dataset.prevCardNumber = prevCardNumber
       }
       cardHolder.appendChild(prev);
 
@@ -164,7 +165,7 @@ const Deck = {
       fav.dataset.action = 'addToFavs'
       random.dataset.action = 'fakeRandom'
       close.dataset.action = 'closeCard'
-      close.dataset.j = j
+      // close.dataset.j = j 
 
       favClose.appendChild(trash);
       favClose.appendChild(fav);
@@ -176,7 +177,7 @@ const Deck = {
       const cardBottom = document.createElement("div");
       cardBottom.className = "cardBottom";
       cardBottom.dataset.action = 'showCard'
-      cardBottom.dataset.j = j
+      //cardBottom.dataset.j = j
 
       const cardImg = document.createElement("img");
       cardImg.className = "cardimg";
@@ -198,12 +199,12 @@ const Deck = {
       next.className = "next";
       if (i < AppState.currentDeck.cards.length && !isTouchDevice) {
         next.classList.add("on");
-        let k = (i + 1).toString();
-        if (k < 10) {
-          k = k.padStart(2, "0");
+        let nextCardNumber = (i + 1).toString(); //k
+        if (nextCardNumber < 10) {
+          nextCardNumber = nextCardNumber.padStart(2, "0");
         }
         next.dataset.action = 'nextCard'
-        next.dataset.k = k
+        next.dataset.nextCardNumber = nextCardNumber
         next.dataset.i = i
       }
 
@@ -266,11 +267,11 @@ const Deck = {
           : Dev.log(LT.NAV, "no pushToHistory");
       }
 
-      let currentCardElem = DOM.switchView.querySelector(`[data-card-number="${cardNumber}"] .cardimg`)
+      let currentCardElem = DOM.switchView.querySelector(`[data-card-number="${cardNumber}"]`)
       //let currentCardElemData = currentCardElem.dataset.cardData
       //AppState.currentCard = JSON.parse(currentCardElemData);
       //DOM.currentCard = currentCardElem.closest('.card');
-      Card.setCurrentCard(currentCardElem, 'showCardNew() - reset')
+      Card.setCurrentCard(currentCardElem, 'showCardNew()')
       //Dev.log(LT.DOM, 'DOM.currentCard', DOM.currentCard)
     }
   },
