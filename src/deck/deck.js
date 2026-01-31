@@ -9,6 +9,7 @@ import DeckList from "../deck_list/deck_list.js";
 import Card from "../card/card.js";
 import Descriptions from "../descriptions/descriptions.js";
 import DOM from "../dom/dom.js";
+import { isLocal } from "../config/config.js";
 
 const Deck = {
   async openDeck(deck_slug, deck_niceText) {
@@ -317,6 +318,10 @@ const Deck = {
     }
     DeckList.takeFiveToDecks();
   },
+  devRemoveTakeFive(){
+    localStorage.setItem("takeFive", JSON.stringify([]));
+    DeckList.takeFiveToDecks();
+  },
   addNewTake5Button() {
     const newTake5Button = document.createElement("button");
     newTake5Button.className = "orange";
@@ -349,5 +354,7 @@ const Deck = {
     this.openDeck("favs", "Kedvencek");
   },
 };
+
+if(isLocal) window.Deck = Deck
 
 export default Deck;

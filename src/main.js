@@ -60,6 +60,14 @@ async function loadApp() {
   dialog;*/
 
 // event listenerek
+/** 
+ * Initialize global event listeners for the application.
+ *
+ * Sets up click handling for various UI actions and navigation state listeners.
+ * Also initializes security listeners and mutation observers.
+ *
+ * @returns {void}
+ */
 function initEventListeners() {
   Dev.log(LT.INIT, "initEventListeners() fut");
   window.addEventListener('click', function(event){

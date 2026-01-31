@@ -6,6 +6,8 @@ import Nav from "../navigation/nav.js";
 import DeckList from "../deck_list/deck_list.js";
 import Dialog from "../dialog/dialog.js";
 import DOM from "../dom/dom.js";
+import { isLocal } from "../config/config.js";
+
 
 const Card = {
   fakeRandom() {
@@ -57,18 +59,18 @@ const Card = {
         if (!isCardView) {
           DOM.switchView.querySelector(".grid").classList.add("cardView");
           //navTo History('card',{deck:currentDeck.slug, cardNumber:k});
-          Nav.navToHistory("card", {
-            deck_slug: AppState.currentDeck.slug,
-            deck_niceText: AppState.currentDeck.niceText,
-            cardNumber: k,
-            sign: "c",
-          });
         }
         DOM.switchView.querySelector(`[data-card-number="${k}"]`).scrollIntoView({
           behavior: "smooth",
           block: "center",
           inline: "center",
-          container: "all",
+          container: "all", 
+        });
+        Nav.navToHistory("card", {
+          deck_slug: AppState.currentDeck.slug,
+          deck_niceText: AppState.currentDeck.niceText,
+          cardNumber: k,
+          sign: "c",
         });
         //showCard(currentDeck[randomNum]);
         AppState.currentStock.splice(randomNum, 1);
@@ -84,7 +86,11 @@ const Card = {
         `${k} - Stock:${AppState.currentStock.length} Waste:${AppState.currentWaste.length},`,
       );
     } else {
-      Dialog.showDialog("Előbb válassz ki kedvenc kártyákat!");
+      if( AppState.currentDeck.slug == 'favs'){
+        Dialog.showDialog("Előbb válassz ki kedvenc kártyákat!");
+      }else if(AppState.currentDeck.slug == 'takeFive'){
+        Dialog.showDialog("Előbb kérj új leosztást!");
+      }
     }
   },
 
@@ -198,4 +204,7 @@ const Card = {
     Dev.log(LT.CARD, `setCurrentCard(): ${from}`, DOM.currentCard, AppState.currentCard)
   },
 };
+
+if(isLocal) window.Card = Card
+
 export default Card;
