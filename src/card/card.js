@@ -199,8 +199,8 @@ const Card = {
       return;
     }
     DOM.currentCard = el;
-    //AppState.currentCard = el.closest("[data-card-data]").dataset.cardData;
-    AppState.currentCard = el.querySelector('.cardimg').dataset.cardData;
+    const cardDataString = el.querySelector('.cardimg').dataset.cardData;
+    AppState.currentCard = JSON.parse(cardDataString); // ✅ OBJECT
     Dev.log(LT.CARD, `setCurrentCard(): ${from}`, DOM.currentCard, AppState.currentCard)
   },
 };
