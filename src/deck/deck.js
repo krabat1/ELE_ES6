@@ -14,22 +14,24 @@ import { isLocal } from "../config/config.js";
 const Deck = {
   async openDeck(deck_slug, deck_niceText) {
     DOM.switchView.querySelector(".grid").setAttribute("id", deck_slug);
-    if (deck_slug === DeckList.take5_base.slug) { // "takeFive"
-      this.removeNewTake5Buttons()
-      this.addNewTake5Button()
+    if (deck_slug === DeckList.take5_base.slug) {
+      // "takeFive"
+      this.removeNewTake5Buttons();
+      this.addNewTake5Button();
     } else {
-      this.removeNewTake5Buttons()
+      this.removeNewTake5Buttons();
     }
-    if (deck_slug === DeckList.favs_base.slug) { // "favs"
-      this.removeRemoveFavButton()
+    if (deck_slug === DeckList.favs_base.slug) {
+      // "favs"
+      this.removeRemoveFavButton();
 
-      const removeFavButton = document.createElement('button')
-      removeFavButton.className = 'red'
-      removeFavButton.dataset.action = 'removeFav'
-      removeFavButton.innerText = 'Kedvencek törlése'
+      const removeFavButton = document.createElement("button");
+      removeFavButton.className = "red";
+      removeFavButton.dataset.action = "removeFav";
+      removeFavButton.innerText = "Kedvencek törlése";
       DOM.switchView.querySelector("#topActions").appendChild(removeFavButton);
     } else {
-      this.removeRemoveFavButton()
+      this.removeRemoveFavButton();
     }
     Descriptions.removeButtons();
 
@@ -49,33 +51,42 @@ const Deck = {
     });
     const index = AppState.decks.findIndex((deck) => deck.slug === deck_slug);
     if (!downloaded) {
-      Dev.log(LT.API, `deckAPI/getDeck (${deck_slug})`);
-      const res = await fetch(
-        `${API.deckAPI}?action=getDeck&slug=${encodeURIComponent(deck_slug)}`,
-      );
-      const json = await res.json();
-      if (!json.success) {
-        Dev.log(
-          LT.API,
-          new Error(`deckAPI/getDeck (${deck_slug}, ${json.error}) sikertelen`),
+      try {
+        Dev.log(LT.API, `deckAPI/getDeck (${deck_slug})`);
+        const res = await fetch(
+          `${API.deckAPI}?action=getDeck&slug=${encodeURIComponent(deck_slug)}`,
         );
-        //console.log("!json.success sajnos");
-        return false;
-      }
-      if (json.success) {
-        const deck = json.data;
-        Dev.log(LT.API, `deckAPI/getDeck (${deck_slug}) letöltve`, { deck });
-        //console.log("deck", deck);
-        if (index > -1) {
-          /**
-           * MIÉRT NEM ????????????
-           * AppState.decks[index] = deck;
-           */
-          AppState.decks[index].cards = deck.cards;
+        const json = await res.json();
+        if (!json.success) {
+          Dev.log(
+            LT.API,
+            new Error(
+              `deckAPI/getDeck (${deck_slug}, ${json.error}) sikertelen`,
+            ),
+          );
+          //console.log("!json.success sajnos");
+          return false;
         }
+        if (json.success) {
+          const deck = json.data;
+          Dev.log(LT.API, `deckAPI/getDeck (${deck_slug}) letöltve`, { deck });
+          //console.log("deck", deck);
+          if (index > -1) {
+            /**
+             * MIÉRT NEM ????????????
+             * AppState.decks[index] = deck;
+             */
+            AppState.decks[index].cards = deck.cards;
+          }
+        }
+      } catch (err) {
+        Dev.log(LT.DECKS, new Error("Hiba a deck megnyitásánál"), { err });
+        //Dialog.showDialog(
+        //  'Hiba a kártyák lekérésénél, próbáld meg újra az "Új leosztás\n gombbal.',
+        //);
       }
     }
-    
+
     // desclink gomb beillesztése/eltávolítása
     const dlink = AppState.decks[index].descLink;
     Dev.log(LT.DECK, "descLink", dlink, typeof dlink);
@@ -104,10 +115,10 @@ const Deck = {
 
     Dev.log(LT.DECK, `create >deck< DOM elements (cards)`);
 
-    if( deck_slug === 'takeFive' && AppState.currentDeck.cards.length === 0){
+    if (deck_slug === "takeFive" && AppState.currentDeck.cards.length === 0) {
       Deck.newTakeFive();
     }
-    
+
     for (let i = 1; i <= AppState.currentDeck.cards.length; i++) {
       let cardIndex = i - 1;
 
@@ -128,8 +139,8 @@ const Deck = {
         if (prevCardNumber < 10) {
           prevCardNumber = prevCardNumber.padStart(2, "0");
         }
-        prev.dataset.action = 'prevCard'
-        prev.dataset.prevCardNumber = prevCardNumber
+        prev.dataset.action = "prevCard";
+        prev.dataset.prevCardNumber = prevCardNumber;
       }
       cardHolder.appendChild(prev);
 
@@ -141,7 +152,7 @@ const Deck = {
       favClose.className = "fav-close";
       if (favs.some((fav) => fav.internalID === cardData.internalID)) {
         favClose.classList.add("show-trash");
-      } 
+      }
 
       const trash = document.createElement("span");
       const fav = document.createElement("span");
@@ -162,11 +173,11 @@ const Deck = {
       random.appendChild(document.createElement("span"));
       close.appendChild(document.createElement("span"));
 
-      trash.dataset.action = 'favToTrash'
-      fav.dataset.action = 'addToFavs'
-      random.dataset.action = 'fakeRandom'
-      close.dataset.action = 'closeCard'
-      // close.dataset.j = j 
+      trash.dataset.action = "favToTrash";
+      fav.dataset.action = "addToFavs";
+      random.dataset.action = "fakeRandom";
+      close.dataset.action = "closeCard";
+      // close.dataset.j = j
 
       favClose.appendChild(trash);
       favClose.appendChild(fav);
@@ -177,7 +188,7 @@ const Deck = {
 
       const cardBottom = document.createElement("div");
       cardBottom.className = "cardBottom";
-      cardBottom.dataset.action = 'showCard'
+      cardBottom.dataset.action = "showCard";
       //cardBottom.dataset.j = j
 
       const cardImg = document.createElement("img");
@@ -188,7 +199,7 @@ const Deck = {
       cardImg.onload = function (event) {
         DeckList.handleImageLoad(event.target);
       };
-      cardImg.dataset.cardData = JSON.stringify(cardData) 
+      cardImg.dataset.cardData = JSON.stringify(cardData);
       const protect = document.createElement("div");
       protect.className = "protect";
       cardBottom.appendChild(cardImg);
@@ -204,9 +215,9 @@ const Deck = {
         if (nextCardNumber < 10) {
           nextCardNumber = nextCardNumber.padStart(2, "0");
         }
-        next.dataset.action = 'nextCard'
-        next.dataset.nextCardNumber = nextCardNumber
-        next.dataset.i = i
+        next.dataset.action = "nextCard";
+        next.dataset.nextCardNumber = nextCardNumber;
+        next.dataset.i = i;
       }
 
       cardHolder.appendChild(next);
@@ -217,14 +228,16 @@ const Deck = {
       `append >deck< DOM elements (cards) to .grid`,
       DOM.switchView.querySelector(".grid"),
     );
-    DOM.switchView.querySelector(".loader").setAttribute("style", "display: none");
+    DOM.switchView
+      .querySelector(".loader")
+      .setAttribute("style", "display: none");
   },
 
   showCardNew({
     pushToHistory = true,
     cardNumber = undefined /*, cardData = {}*/,
   }) {
-    if (!cardNumber) Dev.log(LT.DECK, new Error('cardNumber'), {cardNumber})
+    if (!cardNumber) Dev.log(LT.DECK, new Error("cardNumber"), { cardNumber });
     if (DOM.switchView.querySelector(".grid").classList.contains("cardView")) {
       DOM.switchView.querySelector(".grid").classList.remove("cardView");
       pushToHistory
@@ -235,7 +248,7 @@ const Deck = {
         : Dev.log(LT.DECK, "no pushToHistory");
       //AppState.currentCard = {};
       //DOM.currentCard = null;
-      Card.setCurrentCard(null,'showCardNew() - reset')
+      Card.setCurrentCard(null, "showCardNew() - reset");
     } else {
       DOM.switchView.querySelector(".grid").classList.add("cardView");
       if (cardNumber) {
@@ -257,7 +270,7 @@ const Deck = {
             container: "all",
           });
       } else {
-        Dev.log(LT.DECK, 'no cardNumber', arguments)
+        Dev.log(LT.DECK, "no cardNumber", arguments);
         pushToHistory
           ? Nav.navToHistory("card", {
               deck_slug: AppState.currentDeck.slug,
@@ -268,15 +281,17 @@ const Deck = {
           : Dev.log(LT.NAV, "no pushToHistory");
       }
 
-      let currentCardElem = DOM.switchView.querySelector(`[data-card-number="${cardNumber}"]`)
+      let currentCardElem = DOM.switchView.querySelector(
+        `[data-card-number="${cardNumber}"]`,
+      );
       //let currentCardElemData = currentCardElem.dataset.cardData
       //AppState.currentCard = JSON.parse(currentCardElemData);
       //DOM.currentCard = currentCardElem.closest('.card');
-      Card.setCurrentCard(currentCardElem, 'showCardNew()')
+      Card.setCurrentCard(currentCardElem, "showCardNew()");
       //Dev.log(LT.DOM, 'DOM.currentCard', DOM.currentCard)
     }
   },
-  removeRemoveFavButton(){
+  removeRemoveFavButton() {
     const elementExists = DOM.switchView.querySelectorAll(
       '[data-action="removeFav"]',
     );
@@ -286,7 +301,7 @@ const Deck = {
       });
     }
   },
-  async newTakeFive(){
+  async newTakeFive() {
     Dev.log(LT.EVENT, `newTakeFive.onclick`);
     DOM.switchView.querySelector('[data-action="newTakeFive"]').disabled = true;
     let takeFive = JSON.parse(localStorage.getItem("takeFive") || "[]");
@@ -311,14 +326,16 @@ const Deck = {
         DOM.switchView.querySelector(".newTakeFive").disabled = false;
       }
     } catch (err) {
-      (Dev.log(LT.DECKS, new Error(err)),
-        Dialog.showDialog("Hiba a deck-list betöltésénél."));
+      Dev.log(LT.DECKS, new Error("Hiba a kártyák lekérésénél"), { err });
+      Dialog.showDialog(
+        'Hiba a kártyák lekérésénél, próbáld meg újra az "Új leosztás\n gombbal.',
+      );
       //console.log(err);
       DOM.switchView.querySelector(".newTakeFive").disabled = false;
     }
     DeckList.takeFiveToDecks();
   },
-  devRemoveTakeFive(){
+  devRemoveTakeFive() {
     localStorage.setItem("takeFive", JSON.stringify([]));
     DeckList.takeFiveToDecks();
   },
@@ -341,13 +358,13 @@ const Deck = {
       });
     }
   },
-  openTake5(){
+  openTake5() {
     Dev.log(LT.EVENT, `dailyChallengeBtn.onclick`);
     UI.initView("switchView");
     DOM.switchView.querySelector("h2").textContent = "";
     this.openDeck("takeFive", "Napi Minikihívás");
   },
-  openFavs(){
+  openFavs() {
     Dev.log(LT.EVENT, `favoritesBtn.onclick`);
     UI.initView("switchView");
     DOM.switchView.querySelector("h2").textContent = "";
@@ -355,6 +372,6 @@ const Deck = {
   },
 };
 
-if(isLocal) window.Deck = Deck
+if (isLocal) window.Deck = Deck;
 
 export default Deck;
