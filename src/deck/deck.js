@@ -14,13 +14,13 @@ import { isLocal } from "../config/config.js";
 const Deck = {
   async openDeck(deck_slug, deck_niceText) {
     DOM.switchView.querySelector(".grid").setAttribute("id", deck_slug);
-    if (deck_slug === "takeFive") {
+    if (deck_slug === DeckList.take5_base.slug) { // "takeFive"
       this.removeNewTake5Buttons()
       this.addNewTake5Button()
     } else {
       this.removeNewTake5Buttons()
     }
-    if (deck_slug === "favs") {
+    if (deck_slug === DeckList.favs_base.slug) { // "favs"
       this.removeRemoveFavButton()
 
       const removeFavButton = document.createElement('button')
