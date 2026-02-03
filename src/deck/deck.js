@@ -16,24 +16,44 @@ const Deck = {
     DOM.switchView.querySelector(".grid").setAttribute("id", deck_slug);
     if (deck_slug === DeckList.take5_base.slug) {
       // "takeFive"
-      this.removeNewTake5Buttons();
-      this.addNewTake5Button();
+      UI.toggleButton({
+        parent: DOM.switchView.querySelector("#topActions"),
+        action: "newTakeFive",
+        config: {
+          className: "orange",
+          text: "Új leosztás",
+        }
+      })
     } else {
-      this.removeNewTake5Buttons();
+      UI.toggleButton({
+        parent: DOM.switchView.querySelector("#topActions"),
+        action: "newTakeFive",
+        // no config -> DELETE
+      })
     }
     if (deck_slug === DeckList.favs_base.slug) {
       // "favs"
-      this.removeRemoveFavButton();
-
-      const removeFavButton = document.createElement("button");
-      removeFavButton.className = "red";
-      removeFavButton.dataset.action = "removeFav";
-      removeFavButton.innerText = "Kedvencek törlése";
-      DOM.switchView.querySelector("#topActions").appendChild(removeFavButton);
+      UI.toggleButton({
+        parent: DOM.switchView.querySelector("#topActions"), 
+        action: "removeFav",
+        config: {
+          className: "red",
+          text: "Kedvencek törlése",
+        },
+      })
     } else {
-      this.removeRemoveFavButton();
+      UI.toggleButton({
+        parent: DOM.switchView.querySelector("#topActions"), 
+        action: "removeFav",
+        // no config -> DELETE
+      })
     }
-    Descriptions.removeButtons();
+    // Ez itt kell?
+    UI.toggleButton({
+      parent: DOM.switchView.querySelector("#topActions"),
+      action: "loadDesc"
+      // no config -> DELETE
+    })
 
     // nézzük meg a decks objektumot, nincs e már benne,
     // ha benne van ne töltsük be újra, hanem dolgozzunk abból,
@@ -96,10 +116,21 @@ const Deck = {
         '[data-action="loadDesc"]',
       );
       if (elementExists.length === 0) {
-        Descriptions.addButton();
+        UI.toggleButton({
+          parent: DOM.switchView.querySelector("#topActions"),
+          action: "loadDesc",
+          config: {
+            className: "blue",
+            text: "Leírás",
+          }
+        })
       }
     } else if (AppState.decks[index].descLink === "") {
-      Descriptions.removeButtons();
+      UI.toggleButton({
+        parent: DOM.switchView.querySelector("#topActions"),
+        action: "loadDesc",
+        // no config -> DELETE
+      })
     }
 
     UI.initView("switchView", AppState.decks[index].cards.length);
@@ -291,7 +322,7 @@ const Deck = {
       //Dev.log(LT.DOM, 'DOM.currentCard', DOM.currentCard)
     }
   },
-  removeRemoveFavButton() {
+  /*removeRemoveFavButton() {
     const elementExists = DOM.switchView.querySelectorAll(
       '[data-action="removeFav"]',
     );
@@ -300,7 +331,7 @@ const Deck = {
         el.remove();
       });
     }
-  },
+  },*/
   async newTakeFive() {
     Dev.log(LT.EVENT, `newTakeFive.onclick`);
     DOM.switchView.querySelector('[data-action="newTakeFive"]').disabled = true;
@@ -339,7 +370,7 @@ const Deck = {
     localStorage.setItem("takeFive", JSON.stringify([]));
     DeckList.takeFiveToDecks();
   },
-  addNewTake5Button() {
+  /*addNewTake5Button() {
     const newTake5Button = document.createElement("button");
     newTake5Button.className = "orange";
     //descButton.className = "blue description";
@@ -347,8 +378,8 @@ const Deck = {
     newTake5Button.innerText = "Új leosztás";
     newTake5Button.dataset.action = "newTakeFive";
     DOM.switchView.querySelector("#topActions").appendChild(newTake5Button);
-  },
-  removeNewTake5Buttons() {
+  },*/
+  /*removeNewTake5Buttons() {
     const elementExists = switchView.querySelectorAll(
       '[data-action="newTakeFive"]',
     );
@@ -357,7 +388,7 @@ const Deck = {
         el.remove();
       });
     }
-  },
+  },*/
   openTake5() {
     Dev.log(LT.EVENT, `dailyChallengeBtn.onclick`);
     UI.initView("switchView");

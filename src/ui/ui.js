@@ -39,10 +39,18 @@ const UI = {
       DOM.passwordField.type = "password";
     }
   },
-
-  //showDialog(message, buttons) {
-  // jelenlegi kód
-  //}
+  toggleButton({parent, action, config}) {
+    const existing = parent.querySelectorAll(`[data-action="${action}"]`);
+    existing.forEach(el => el.remove());
+    
+    if (config) {
+      const btn = document.createElement('button');
+      btn.className = config.className;
+      btn.dataset.action = action;
+      btn.innerText = config.text;
+      parent.appendChild(btn);
+    }
+  }
 };
 
 export default UI;

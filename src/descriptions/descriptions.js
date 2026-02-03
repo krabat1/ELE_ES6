@@ -21,7 +21,7 @@ const Descriptions = {
     p.appendChild(closeButt);
     description.appendChild(p);
   },
-  addButton() {
+  /*addButton() {
     const descButton = document.createElement("button");
     descButton.className = "blue";
     //descButton.className = "blue description";
@@ -40,7 +40,7 @@ const Descriptions = {
       });
     }
     this.closeDesc()
-  },
+  },*/
   async closeDesc() {
     while (description.firstChild) {
       //await new Promise((resolve) => setTimeout(resolve, 5));

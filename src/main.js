@@ -110,6 +110,17 @@ function initEventListeners() {
       Auth.logout();
     }
 
+    if (action === 'open-deck'){
+      // click to .protect
+      console.log(event.target.previousElementSibling)
+      UI.initView("switchView");
+      DOM.switchView.querySelector("h2").textContent = "";
+      Deck.openDeck(
+        event.target.previousElementSibling.dataset.slug, 
+        event.target.previousElementSibling.getAttribute('alt')
+      );
+    }
+
     // DECK
 
     if (action === 'backHome') {
@@ -181,6 +192,18 @@ function initEventListeners() {
       Card.nextCard(nextCardNumber,event)
     }
 
+    // DIALOG
+
+    if (action === 'leaveYes'){
+      Nav.navToHistory("login", {}); // forward stack levágása
+      DOM.dialog.close();
+      window.history.go(-3); // Tényleges kilépés az előzményekből
+
+    }
+    if (action === 'leaveNo'){
+      DOM.dialog.close();
+    }
+
   });
 
   window.onpopstate = function (event) {
@@ -209,28 +232,23 @@ function initEventListeners() {
     //console.log(event.state.stack);
     const actions = {
       confirm: () => {
-        //console.log(`X ${event.state.stack}`)
-        let dialogButton1 = {
-          text: "Igen",
-          onclick: function () {
-            Nav.navToHistory("login", {}); // forward stack levágása
-            DOM.dialog.close();
-            window.history.go(-3); // Tényleges kilépés az előzményekből
+        Dialog.showDialog("El akarod hagyni az alkalmazást?");
+        UI.toggleButton({
+          parent: DOM.dialog.querySelector(".dialogButtons"), 
+          action: "leaveYes",
+          config: {
+            className: "blue",
+            text: "Igen",
           },
-        };
-        let dialogButton2 = {
-          text: "Nem",
-          onclick: function () {
-            // Visszaugrunk a HOME-ra, hogy legyen hova újra visszalépni
-            //window.history.replaceState({ step: 'home' }, "");
-            DOM.dialog.close();
+        })
+        UI.toggleButton({
+          parent: DOM.dialog.querySelector(".dialogButtons"), 
+          action: "leaveNo",
+          config: {
+            className: "blue",
+            text: "Nem",
           },
-        };
-
-        Dialog.showDialog("El akarod hagyni az alkalmazást?", [
-          dialogButton1,
-          dialogButton2,
-        ]);
+        })
       },
       login: () => {
         //console.log(`X ${event.state.stack}`)

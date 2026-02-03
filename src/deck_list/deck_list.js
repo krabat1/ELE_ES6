@@ -120,6 +120,7 @@ const DeckList = {
         deckImg.onload = function (event) {
           DeckList.handleImageLoad(this);
         };
+        deckImg.dataset.slug = deck.slug
         div.appendChild(deckImg);
 
         const protect = document.createElement("div");
@@ -130,12 +131,12 @@ const DeckList = {
               <p>${deck.niceText}</p>
               <img class="deckimg" src="${deck.imageUrl}" alt="${deck.niceText}" onload="this.handleImageLoad(this);">
               <div class="protect"></div>`;*/
-
-        div.onclick = () => {
+        div.dataset.action = "open-deck"
+        /*div.onclick = () => {
           UI.initView("switchView");
           DOM.switchView.querySelector("h2").textContent = "";
           Deck.openDeck(deck.slug, deck.niceText);
-        };
+        };*/
         DOM.home.querySelector(".loader").setAttribute("style", "display:none");
         DOM.home.querySelector(".grid").appendChild(div);
       });
