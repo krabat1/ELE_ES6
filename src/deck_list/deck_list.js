@@ -122,7 +122,7 @@ const DeckList = {
       UI.initView("home", AppState.decks.length);
       Dev.log(LT.DECKS, `create >home< DOM elements`)
 
-      AppState.decks.push(this.test_base); // csak ha isLocal
+      testToDecks() // csak ha isLocal
 
       AppState.decks.forEach((deck) => {
         if (deck.length === 0) return;
