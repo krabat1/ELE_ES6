@@ -698,6 +698,14 @@
         lemonchiffon 50vw
       );
     }
+    #switchView #tukorkartyak.grid.cardView {
+      background: linear-gradient(
+        95deg, 
+        rgb(214 235 242), 
+        white 50%, 
+        lightblue 50.2%, 
+        white)
+    }
 
     /*
     * Dialog

@@ -112,7 +112,7 @@ function initEventListeners() {
 
     if (action === 'open-deck'){
       // click to .protect
-      console.log(event.target.previousElementSibling)
+      //console.log(event.target.previousElementSibling)
       UI.initView("switchView");
       DOM.switchView.querySelector("h2").textContent = "";
       Deck.openDeck(
