@@ -6,6 +6,7 @@ import AppState from "../core/state.js";
 import UI from "../ui/ui.js";
 import Deck from "../deck/deck.js";
 import DOM from "../dom/dom.js";
+import { isLocal } from "../config/config.js";
 
 const DeckList = {
   /* ITT TARTASZ  Object.assign()*/
@@ -20,6 +21,22 @@ const DeckList = {
     imageUrl: "",
     niceText: "Napi Minikihívás",
     descLink: "",     
+  },
+  test_base:{
+    slug: "test",
+    imageUrl: "https://images.emojiterra.com/microsoft/fluent-emoji/15.1/512px/1f9ea_color.png",
+    niceText: "Teszt (csak lokális)",
+    descLink: "",
+    cards: [
+      {
+        internalID: 99999, 
+        imageUrl: 'https://placehold.co/689x1000/EEE/31343C?font=poppins&text=HELLO%5CnWORLD',
+        title: "tesztkép",
+        slug: "tesztkep", 
+        level: "",
+        tags: ["teszt"],
+      }
+    ],
   },
 
 
@@ -104,6 +121,9 @@ const DeckList = {
           */
       UI.initView("home", AppState.decks.length);
       Dev.log(LT.DECKS, `create >home< DOM elements`)
+
+      AppState.decks.push(this.test_base); // csak ha isLocal
+
       AppState.decks.forEach((deck) => {
         if (deck.length === 0) return;
         const div = document.createElement("div");
@@ -232,6 +252,12 @@ const DeckList = {
       }
     }
   },
+  testToDecks(){
+    if(isLocal){
+      Dev.log(LT.DECKS, "push test deck")
+      AppState.decks.push(this.test_base);
+    }
+  }
 };
 
 export default DeckList;
