@@ -14,7 +14,7 @@ import { isLocal } from "../config/config.js";
 const Deck = {
   async openDeck(deck_slug, deck_niceText) {
     DOM.switchView.querySelector(".grid").setAttribute("id", deck_slug);
-    if (deck_slug === DeckList.take5_base.slug) {
+    if (deck_slug === DeckList.takeFive_base.slug) {
       // "takeFive"
       UI.toggleButton({
         parent: DOM.switchView.querySelector("#topActions"),
@@ -95,6 +95,7 @@ const Deck = {
             /**
              * MIÉRT NEM ????????????
              * AppState.decks[index] = deck;
+             * Válasz: Mert a deck objektum több property-t tartalmaz, te csak a cards-ot akarod frissíteni.
              */
             AppState.decks[index].cards = deck.cards;
           }
@@ -341,7 +342,7 @@ const Deck = {
       Dev.log(LT.AUTH, "deckAPI/getRandomCards");
       const res = await fetch(`${API.deckAPI}?action=getRandomCards&count=5`);
       const json = await res.json();
-      Dev.log(LT.TAKE5, "takeFive JSON:", json);
+      Dev.log(LT.TAKEFIVE, "takeFive JSON:", json);
       if (!json.success) {
         Dev.log(
           LT.API,
@@ -389,7 +390,7 @@ const Deck = {
       });
     }
   },*/
-  openTake5() {
+  openTakeFive() {
     Dev.log(LT.EVENT, `dailyChallengeBtn.onclick`);
     UI.initView("switchView");
     DOM.switchView.querySelector("h2").textContent = "";

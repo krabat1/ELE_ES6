@@ -15,7 +15,7 @@ const DeckList = {
     niceText: "Kedvencek",
     descLink: "",
   },
-  take5_base:{
+  takeFive_base:{
     slug: "takeFive",
     imageUrl: "",
     niceText: "Napi Minikihívás",
@@ -154,8 +154,8 @@ const DeckList = {
         cards: favs,
       });*/
       let takeFive = JSON.parse(localStorage.getItem("takeFive") || "[]");
-      this.take5_base.cards = takeFive;
-      AppState.decks.push(this.take5_base);
+      this.takeFive_base.cards = takeFive;
+      AppState.decks.push(this.takeFive_base);
       /*AppState.decks.push({
         slug: "takeFive",
         imageUrl: "",
@@ -191,7 +191,7 @@ const DeckList = {
     let takeFive = JSON.parse(localStorage.getItem("takeFive") || "[]");
     const index2 = AppState.decks.findIndex((deck) => {
       if (!deck.slug) {
-        Dev.log(LT.TAKE5, "takeFiveToDecks: nincs ilyen tulajdonság!");
+        Dev.log(LT.TAKEFIVE, "takeFiveToDecks: nincs ilyen tulajdonság!");
         return false;
       }
       return deck.slug === "takeFive";

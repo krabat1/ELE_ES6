@@ -98,8 +98,8 @@ function initEventListeners() {
 
     // HOME (DECK-LIST)
 
-    if (action === 'openTake5') {
-      Deck.openTake5()
+    if (action === 'openTakeFive') {
+      Deck.openTakeFive()
     }
 
     if (action === 'openFavs') {
@@ -147,7 +147,7 @@ function initEventListeners() {
       DeckList.favsToDecks();
     }
 
-    // DECK / TAKE5
+    // DECK / TAKEFIVE
   
     if (action === 'newTakeFive') {
       Deck.newTakeFive()
