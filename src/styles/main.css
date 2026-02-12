@@ -706,6 +706,16 @@
         lightblue 50.2%, 
         white)
     }
+    #switchView #fokuszkartyak.grid.cardView {
+      background: repeating-radial-gradient(
+        circle, 
+        rgb(252, 224, 68) 0px, 
+        rgb(119, 206, 145) 4px, 
+        rgb(252, 224, 68) 8px,
+        rgb(252, 224, 68) 36px
+        );
+    }
+    
 
     /*
     * Dialog

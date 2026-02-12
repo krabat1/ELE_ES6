@@ -1,3 +1,5 @@
+import { isLocal } from "../config/config.js";
+
 const AppState = {
   userEmail: "",
   decks: [],
@@ -6,5 +8,6 @@ const AppState = {
   currentStock: [],
   currentWaste: [],
 };
+if (isLocal) window.AppState = AppState;
 
 export default AppState;

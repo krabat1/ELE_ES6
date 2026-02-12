@@ -35,6 +35,7 @@ const DeckList = {
         slug: "tesztkep", 
         level: "",
         tags: ["teszt"],
+        videoUrl: ''
       }
     ],
   },
