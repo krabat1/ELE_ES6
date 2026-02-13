@@ -109,8 +109,8 @@ const Deck = {
     }
 
     // desclink gomb beillesztése/eltávolítása
-    const dlink = AppState.decks[index].descLink;
-    Dev.log(LT.DECK, "descLink", dlink, typeof dlink);
+    //const dlink = AppState.decks[index].descLink;
+    //Dev.log(LT.DECK, "descLink", dlink, typeof dlink);
 
     if (AppState.decks[index].descLink !== "") {
       const elementExists = DOM.switchView.querySelectorAll(
