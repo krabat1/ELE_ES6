@@ -7,6 +7,7 @@ import UI from "../ui/ui.js";
 import Deck from "../deck/deck.js";
 import DOM from "../dom/dom.js";
 import { isLocal } from "../config/config.js";
+import ele_data from "../ele_data/ele_data.js";
 
 const DeckList = {
   /* ITT TARTASZ  Object.assign()*/
@@ -73,18 +74,25 @@ const DeckList = {
   async loadDecks() {
     Dev.log(LT.DECKS, "Paklik listájának betöltése");
     try {
-      Dev.log(LT.API, 'deckAPI/getDeckIndex')
-      const res = await fetch(`${API.deckAPI}?action=getDeckIndex`);
-      const data = await res.json();
+      let decksFromStorage = localStorage.getItem(ele_data.LOCAL_DATA_KEYNAME)
+      if(decksFromStorage != null ){
+        AppState.decks = JSON.parse(decksFromStorage)
+        Dev.log(LT.DECKS,'Deckek AppState-ben (LOCALSTORAGE)', {_AppState_decks:AppState.decks})
+      }else{
+        Dev.log(LT.API, 'deckAPI/getDeckIndex')
+        const res = await fetch(`${API.deckAPI}?action=getDeckIndex`);
+        const data = await res.json();
 
-      if (!data.success) {
-        Dev.log(LT.API, new Error(`deckAPI/getDeckIndex (${data.error}) sikertelen`))
-        //console.log("!data.success sajnos");
-        return false;
+        if (!data.success) {
+          Dev.log(LT.API, new Error(`deckAPI/getDeckIndex (${data.error}) sikertelen`))
+          //console.log("!data.success sajnos");
+          return false;
+        }
+        //console.log(data);
+        AppState.decks = data.data;
+        Dev.log(LT.DECKS, `Deckek AppState-ben (FETCH )`, {_AppState_decks:AppState.decks});
       }
-      //console.log(data);
-      AppState.decks = data.data;
-      Dev.log(LT.DECKS, `Deckek az AppState-ben vannak`, {_AppState_decks:AppState.decks});
+
 
       /*          
           const deckPromises = data.data.map((deck) => {

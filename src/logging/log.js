@@ -17,6 +17,7 @@ const LT = {
   ERROR: "error",
   DOM: "dom",
   OBSERVE: "observe",
+  SYNC: "sync",
 };
 
 const Logging = {
@@ -48,6 +49,7 @@ const Logging = {
     error: 2,
     dom: 2,
     observe: 2,
+    sync: 2,
   },
 
   log(category, message, ...details) {

@@ -16,16 +16,22 @@ import Descriptions from "./descriptions/descriptions.js";
 import DOM from "./dom/dom.js";
 import { showDOM } from "./dom/dom.js";
 import Observe from "./observer/observer.js";
+import ele_data from "./ele_data/ele_data.js";
 // importok
 
 
 
-function loadStyles() {
+async function loadStyles() {
   Dev.log(LT.INIT, "loadStyles() fut");
   const link = document.createElement("link");
   link.rel = "stylesheet";
   link.href = `${BASE_URL}src/styles/main.css`;
+  //document.head.appendChild(link);
+  //await ele_data.sync_data()
+  //loadApp();
+  const cssLoaded = new Promise(resolve => link.onload = resolve); // Ígéret a betöltésre
   document.head.appendChild(link);
+  await Promise.all([cssLoaded, ele_data.sync_data()]); // Megvárjuk mindkettőt párhuzamosan!
   loadApp();
 }
 
@@ -373,4 +379,4 @@ async function init() {
   initEventListeners();
 }
 
-document.addEventListener("DOMContentLoaded", loadStyles());
+document.addEventListener("DOMContentLoaded", loadStyles);
