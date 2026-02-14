@@ -6,6 +6,7 @@ const ele_data = {
   ELE_VERSION_URL: "https://cdn.jsdelivr.net/gh/krabat1/ELE_DATA/version.json",
   LOCAL_DATA_KEYNAME: "dataObj",
   LOCAL_VERSION_KEYNAME: "versionObj",
+  remoteHash: '',
 
   // Egyszerű SHA-256 hash függvény a böngészőben
   async generateHash(string) {
@@ -15,47 +16,47 @@ const ele_data = {
     return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
   },
   async sync_data() {
-    let remoteHash = await this.fetchEleVersion();
+    this.remoteHash = await this.fetchEleVersion();
     let start = new Date().getTime();
     if (localStorage.getItem(this.LOCAL_VERSION_KEYNAME) === null) {
       Dev.log(LT.SYNC,'NO LOCAL VERSION HASH')
       let remoteData = await this.fetchEleData();
-      let remoteIsConsistent = await this.checkConsistency('remoteHash-remoteData',remoteHash, remoteData);
+      let remoteIsConsistent = await this.checkConsistency('remoteHash-remoteData',this.remoteHash, remoteData);
       if (remoteIsConsistent) {
         // mehet bele localStorage-ba
-        this.storeData(remoteHash, remoteData)
+        this.storeData(this.remoteHash, remoteData)
       }
     } else {
       Dev.log(LT.SYNC,'WE HAVE LOCAL VERSION HASH')
       let localHash = localStorage.getItem(this.LOCAL_VERSION_KEYNAME);
-      if (localHash == remoteHash) {
+      if (localHash == this.remoteHash) {
         Dev.log(LT.SYNC,'LOCAL VERSION HASH IS UP-TO-DATE')
         if (localStorage.getItem(this.LOCAL_DATA_KEYNAME) === null) {
           Dev.log(LT.SYNC,'NO LOCAL DATA')
           let remoteData = await this.fetchEleData();
           let remoteIsConsistent = await this.checkConsistency('hash-remoteData',
-            remoteHash,
+            this.remoteHash,
             remoteData,
           );
           if (remoteIsConsistent) {
             // mehet bele localStorage-ba
-            this.storeData(remoteHash, remoteData)
+            this.storeData(this.remoteHash, remoteData)
           }
         } else {
           Dev.log(LT.SYNC,'WE HAVE LOCAL DATA')
           let localData = localStorage.getItem(this.LOCAL_DATA_KEYNAME);
           if(typeof localData != 'string') Dev.log(LT.SYNC,new Error('WE STORE DATA ONLY AS TEXT!'))
-          let localIsConsistent = await this.checkConsistency('hash-localData',remoteHash, localData);
+          let localIsConsistent = await this.checkConsistency('hash-localData',this.remoteHash, localData);
           if (!localIsConsistent) {
             Dev.log(LT.SYNC,'LOCAL DATA IS NOT CONSISTENT, GET REMOTE DATA')
             let remoteData = await this.fetchEleData();
             let remoteIsConsistent = await this.checkConsistency('hash-remoteData',
-              remoteHash,
+              this.remoteHash,
               remoteData,
             );
             if (remoteIsConsistent) {
               // mehet bele localStorage-ba
-              this.storeData(remoteHash, remoteData)
+              this.storeData(this.remoteHash, remoteData)
             }
           } else {
             Dev.log(LT.SYNC,'DO NOTHING, HASH AND DATA IS UP-TO-DATE!')
@@ -64,10 +65,10 @@ const ele_data = {
       } else {
         Dev.log(LT.SYNC,'LOCAL VERSION HASH IS EXPIRED')
         let remoteData = await this.fetchEleData();
-        let remoteIsConsistent = await this.checkConsistency('hash-remoteData',remoteHash, remoteData);
+        let remoteIsConsistent = await this.checkConsistency('hash-remoteData',this.remoteHash, remoteData);
         if (remoteIsConsistent) {
           // mehet bele localStorage-ba
-          this.storeData(remoteHash, remoteData)
+          this.storeData(this.remoteHash, remoteData)
         }
       }
     }
@@ -100,7 +101,7 @@ const ele_data = {
 
   async fetchEleVersion() {
     try {
-      const response = await fetch(this.ELE_VERSION_URL);
+      const response = await fetch(`${this.ELE_VERSION_URL}?t=${Date.now()}`);
       const remote = await response.json();
       return remote.fullHash;
     } catch (error) {
@@ -109,7 +110,7 @@ const ele_data = {
   },
   async fetchEleData() {
     try {
-      const response = await fetch(this.ELE_DATA_URL);
+      const response = await fetch(`${this.ELE_DATA_URL}?v=${this.remoteHash}`);
       //const remote = await response.json();
       const remote = await response.text(); // HASH JUST FROM TEXT !!!
       return remote;
