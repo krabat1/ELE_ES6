@@ -378,7 +378,7 @@ async function init() {
     });
     UI.hideAll("login");
     Nav.navToHistory("login", {});
-    AppState.decks = [];
+    //AppState.decks = [];
   }
   initEventListeners();
 }
