@@ -72,6 +72,7 @@ const Deck = {
     const index = AppState.decks.findIndex((deck) => deck.slug === deck_slug);
     if (!downloaded) {
       try {
+        Dev.log(LT.API, `❗❗ Már le kéne legyen töltve! >:( (${deck_slug})`);
         Dev.log(LT.API, `deckAPI/getDeck (${deck_slug})`);
         const res = await fetch(
           `${API.deckAPI}?action=getDeck&slug=${encodeURIComponent(deck_slug)}`,

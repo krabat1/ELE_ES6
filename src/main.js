@@ -33,6 +33,10 @@ async function loadStyles() {
   document.head.appendChild(link);
   await Promise.all([cssLoaded, ele_data.sync_data()]); // Megvárjuk mindkettőt párhuzamosan!
   loadApp();
+  // Töltsük be az appstate-be már most a deckeket
+  let decksFromStorage = localStorage.getItem(ele_data.LOCAL_DATA_KEYNAME)
+  AppState.decks = JSON.parse(decksFromStorage)
+  Dev.log(LT.DECKS,'Deckek AppState-ben (LOCALSTORAGE, deck_list.loadDecks() előtt)', {_AppState_decks:AppState.decks})
 }
 
 async function loadApp() {
@@ -50,7 +54,7 @@ async function loadApp() {
   DOM.home = document.getElementById("home");
   DOM.switchView = document.getElementById("switchView");
   DOM.dialog = document.getElementById("dialogView");
-  showDOM()
+  showDOM() // Dom elemek kiírása konzolra
   init();
 }
 
