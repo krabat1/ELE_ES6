@@ -176,19 +176,32 @@ function initEventListeners() {
     }
     if (action === 'closeCard') {
       const cardNumber = event.target.closest('[data-card-number]').dataset.cardNumber
-      Deck.showCardNew({ pushToHistory: true, cardNumber: cardNumber });
+      Deck.showCardNew({ pushToHistory: true, cardNumber: cardNumber , caller: 'main.js closeCard'});
     }
 
     // CARD / CARD-BOTTOM
 
     if (action === 'showCard'){
       //const j = event.target.parentNode.dataset.j
-      const cardNumber = event.target.closest('[data-card-number]').dataset.cardNumber
-      Dev.log(LT.EVENT, 'cardNumber', {cardNumber})
-      Deck.showCardNew({
-        pushToHistory: true,
-        cardNumber: cardNumber /*, cardData:cardData*/,
-      });
+      if(!event.target.closest('.grid').classList.contains('cardView')){
+        const cardNumber = event.target.closest('[data-card-number]').dataset.cardNumber
+        Dev.log(LT.EVENT, 'cardNumber', {cardNumber})
+        Deck.showCardNew({
+          pushToHistory: true,
+          cardNumber: cardNumber /*, cardData:cardData*/,
+          caller: 'main.js showCard'
+        });        
+      }
+    }
+
+    if (action === 'mediaPlay'){
+      const iframe = event.target.closest('details').querySelector('iframe')
+      Card.loadVideo(iframe)
+    }
+
+    if (action === 'mediaCancel'){
+      const iframe = event.target.closest('details').querySelector('iframe')
+      Card.unLoadVideo(iframe, event.target)
     }
 
     // CARD / LEFT-RIGHT
@@ -317,6 +330,7 @@ function initEventListeners() {
             Deck.showCardNew({
               pushToHistory: false,
               cardNumber: event.state.cardNumber /*, cardData:cardData*/,
+              caller: 'main.js onpopstate'
             });
           } else {
             Dev.log(LT.NAV, "Meg van nyitva kártya ");

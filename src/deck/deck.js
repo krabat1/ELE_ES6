@@ -163,6 +163,9 @@ const Deck = {
       const cardHolder = document.createElement("div");
       cardHolder.dataset.cardNumber = cardNumber;
       cardHolder.className = "card loading";
+      if(AppState.currentDeck.cards[cardIndex].mediaID !== ''){
+        cardHolder.classList.add("media")
+      }
 
       const prev = document.createElement("div");
       prev.className = "prev";
@@ -233,10 +236,64 @@ const Deck = {
         DeckList.handleImageLoad(event.target);
       };
       cardImg.dataset.cardData = JSON.stringify(cardData);
+      
+      let mediaHolder = '' 
+      if(AppState.currentDeck.cards[cardIndex].mediaID !== ''){
+        mediaHolder = document.createElement('div')
+        mediaHolder.className = "media-holder"
+        const details = document.createElement('details')
+        const summary = document.createElement('summary')
+        summary.setAttribute("aria-label",`Play video: ${AppState.currentDeck.cards[cardIndex].mediaID}`)
+
+        const svgPlay = document.createElementNS("http://www.w3.org/2000/svg", "svg")
+        svgPlay.setAttribute("class","play-circle")
+        svgPlay.setAttribute("xmlns","http://www.w3.org/2000/svg")
+        svgPlay.setAttribute("height","48px")
+        svgPlay.setAttributeNS(null, "viewBox","0 -960 960 960")
+        svgPlay.setAttribute("width","48px")
+        svgPlay.setAttribute("fill","#1f1f1f")  
+        svgPlay.dataset.action = "mediaPlay"
+        const pathPlay = document.createElementNS("http://www.w3.org/2000/svg", 'path')
+        pathPlay.setAttribute("d","m383-310 267-170-267-170v340Zm97 230q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-156t86-127Q252-817 325-848.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 82-31.5 155T763-197.5q-54 54.5-127 86T480-80Zm0-60q142 0 241-99.5T820-480q0-142-99-241t-241-99q-141 0-240.5 99T140-480q0 141 99.5 240.5T480-140Zm0-340Z")
+        svgPlay.appendChild(pathPlay)
+        summary.appendChild(svgPlay)
+        
+        const svgCancel = document.createElementNS("http://www.w3.org/2000/svg", "svg")
+        svgCancel.setAttribute("class","cancel-circle")
+        svgCancel.setAttribute("xmlns","http://www.w3.org/2000/svg")
+        svgCancel.setAttribute("height","48px")
+        svgCancel.setAttributeNS(null, "viewBox","0 -960 960 960")
+        svgCancel.setAttribute("width","48px")
+        svgCancel.setAttribute("fill","#1f1f1f")  
+        svgCancel.dataset.action = "mediaCancel"
+        const pathCancel = document.createElementNS("http://www.w3.org/2000/svg", 'path')
+        pathCancel.setAttribute("d","m330-288 150-150 150 150 42-42-150-150 150-150-42-42-150 150-150-150-42 42 150 150-150 150 42 42ZM480-80q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-156t86-127Q252-817 325-848.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 82-31.5 155T763-197.5q-54 54.5-127 86T480-80Zm0-60q142 0 241-99.5T820-480q0-142-99-241t-241-99q-141 0-240.5 99T140-480q0 141 99.5 240.5T480-140Zm0-340Z")
+        svgCancel.appendChild(pathCancel)
+        summary.appendChild(svgCancel)
+        details.appendChild(summary) 
+
+        const iframe = document.createElement('iframe')
+        iframe.setAttribute("id", AppState.currentDeck.cards[cardIndex].mediaID)
+        iframe.setAttribute("src", "")
+        iframe.setAttribute("frameborder", "0")
+        iframe.setAttribute("title", AppState.currentDeck.cards[cardIndex].mediaTitle)
+        iframe.setAttribute("allow","accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture")
+        iframe.setAttribute("allowfullscreen","true")
+        iframe.setAttribute("autoplay","true")
+        iframe.setAttribute("referrerpolicy","strict-origin-when-cross-origin")
+        details.appendChild(iframe)
+        mediaHolder.appendChild(details)
+        // iframe.setAttribute("","")
+        // `https://www.youtube.com/embed/${AppState.currentDeck.cards[cardIndex].mediaID}?enablejsapi=1`
+      }
+
       const protect = document.createElement("div");
       protect.className = "protect";
-      cardBottom.appendChild(cardImg);
       cardBottom.appendChild(protect);
+      cardBottom.appendChild(cardImg);
+      if(AppState.currentDeck.cards[cardIndex].mediaID !== ''){
+        cardBottom.appendChild(mediaHolder);
+      }
       cardMiddle.appendChild(cardBottom);
       cardHolder.appendChild(cardMiddle);
 
@@ -269,9 +326,12 @@ const Deck = {
   showCardNew({
     pushToHistory = true,
     cardNumber = undefined /*, cardData = {}*/,
+    caller = 'unknown'
   }) {
+    Dev.log(LT.CARD, 'showCardNew caller',{caller})
     if (!cardNumber) Dev.log(LT.DECK, new Error("cardNumber"), { cardNumber });
     if (DOM.switchView.querySelector(".grid").classList.contains("cardView")) {
+      console.log('showCardNew remove .cardView')
       DOM.switchView.querySelector(".grid").classList.remove("cardView");
       pushToHistory
         ? Nav.navToHistory("deck", {
@@ -283,6 +343,7 @@ const Deck = {
       //DOM.currentCard = null;
       Card.setCurrentCard(null, "showCardNew() - reset");
     } else {
+      console.log('showCardNew add .cardView')
       DOM.switchView.querySelector(".grid").classList.add("cardView");
       if (cardNumber) {
         //console.log('sign a '+ JSON.stringify(currentDeck))

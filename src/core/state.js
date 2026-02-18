@@ -7,6 +7,7 @@ const AppState = {
   currentCard: {},
   currentStock: [],
   currentWaste: [],
+  playerStates: {},
 };
 if (isLocal) window.AppState = AppState;
 

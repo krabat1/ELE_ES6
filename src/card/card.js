@@ -8,7 +8,6 @@ import Dialog from "../dialog/dialog.js";
 import DOM from "../dom/dom.js";
 import { isLocal } from "../config/config.js";
 
-
 const Card = {
   fakeRandom() {
     if (AppState.currentDeck.cards.length > 0) {
@@ -58,6 +57,7 @@ const Card = {
         }
         if (!isCardView) {
           DOM.switchView.querySelector(".grid").classList.add("cardView");
+          console.log('cardView class added')
           //navTo History('card',{deck:currentDeck.slug, cardNumber:k});
         }
         DOM.switchView.querySelector(`[data-card-number="${k}"]`).scrollIntoView({
@@ -193,6 +193,25 @@ const Card = {
     });
   },
   setCurrentCard(el, from){
+    document.querySelectorAll('.card.media').forEach((card)=>{
+        this.unLoadVideo(card.querySelector('iframe'), null)
+    })
+    Object.keys(AppState.playerStates).forEach(id => {
+      const state = AppState.playerStates[id];
+      
+      if (state.instance) {
+        // Itt mégis kell a destroy, de csak nézetváltáskor!
+        if (typeof state.instance.destroy === 'function') {
+          try {
+            state.instance.destroy();
+          } catch (e) {
+            // Ha már törlődött a DOM-ból, itt elkapjuk a hibát
+            Dev.log(LT.CARD, 'Video Stop Error', {id}, {e})
+          }
+        }
+        state.instance = null;
+      }
+    });
     if(el === null){
       AppState.currentCard = {};
       DOM.currentCard = null;
@@ -202,7 +221,75 @@ const Card = {
     const cardDataString = el.querySelector('.cardimg').dataset.cardData;
     AppState.currentCard = JSON.parse(cardDataString); // ✅ OBJECT
     Dev.log(LT.CARD, `setCurrentCard(): ${from}`, DOM.currentCard, AppState.currentCard)
+
   },
+  loadVideo(iframe){
+    const id = iframe.id
+    const state = AppState.playerStates[id] || (AppState.playerStates[id] = { lastTime: 0 });
+    const lastTime = state?.lastTime ?? 0;
+    const startParam = lastTime > 0 ? `&start=${Math.floor(lastTime)}` : "";      
+    //const startParam = state.lastTime > 0 ? `&start=${Math.floor(state.lastTime)}` : "";
+
+    const src = `https://www.youtube.com/embed/${AppState.currentCard.mediaID}?enablejsapi=1${startParam}`      
+    iframe.setAttribute("src",src)
+    state.instance = new YT.Player(id, {
+      events: {
+        'onReady': (event) => {
+            // Itt jelezhetjük, hogy a lejátszó készen áll
+            state.isReady = true;
+            // Opcionális: automatikus indítás kinyitáskor
+            // event.target.playVideo();
+        },
+        'onStateChange': (event) => {
+          // YT.PlayerState.ENDED értéke 0
+          if (event.data === YT.PlayerState.ENDED) {
+            event.target.seekTo(0); // Visszaugrik az elejére
+            event.target.pauseVideo(); // Megállítja, mielőtt újraindulna
+            state.lastTime = state.instance.getCurrentTime();
+          }
+          if (event.data === YT.PlayerState.PAUSED) {
+            state.lastTime = state.instance.getCurrentTime();
+          }
+        }
+      }
+    });
+    
+  },
+  unLoadVideo(iframe, target){
+    const id = iframe.id
+    const state = AppState.playerStates[id] || (AppState.playerStates[id] = { lastTime: 0 });
+    
+    /**
+     * Ha nem a kártyán zárjuk be a videót, külön be kell zárni.
+    */
+    if(target === null && iframe.closest('details').hasAttribute('open')){
+      //iframe.closest('details').querySelector('summary').click() BAAAD
+      iframe.closest('details').open = false; 
+      //iframe.closest('details').removeAttribute('open');
+      //iframe.closest('details').toggleAttribute("open");
+    }
+
+    if (state.instance) {
+      // Megnézzük, hogy az API már csatlakozott-e és van-e getCurrentTime metódusa
+      if (typeof state.instance.getCurrentTime === 'function') {
+        try {
+          state.lastTime = state.instance.getCurrentTime();
+        } catch (e) {
+          console.log("Még nem lehetett lekérdezni az időt.");
+        }
+      }
+
+      // A biztonságos törlés:
+      //if (typeof state.instance.destroy === 'function') {
+        // state.instance.destroy();
+      //}
+      
+      state.instance = null; // Kiürítjük a referenciát
+      state.isReady = false;
+    }
+
+    iframe.setAttribute("src","")
+  }
 };
 
 if(isLocal) window.Card = Card

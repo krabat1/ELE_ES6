@@ -30,14 +30,35 @@ const DeckList = {
     descLink: "",
     cards: [
       {
-        internalID: 99999, 
+        internalID: 99991, 
         imageUrl: 'https://placehold.co/689x1000/EEE/31343C?font=poppins&text=HELLO%5CnWORLD',
         title: "tesztkép",
         slug: "tesztkep", 
         level: "",
         tags: ["teszt"],
-        videoUrl: ''
-      }
+        mediaID: 'cSvyvuC-vPY',
+        mediaTitle: 'cím'
+      },
+      {
+        internalID: 99992, 
+        imageUrl: 'https://placehold.co/689x1000/EEE/31343C?font=poppins&text=NO%5Cn%5CnVIDEO',
+        title: "tesztkép",
+        slug: "tesztkep", 
+        level: "",
+        tags: ["teszt"],
+        mediaID: '',
+        mediaTitle: ''
+      },
+      {
+        internalID: 99993, 
+        imageUrl: 'https://placehold.co/689x1000/EEE/31343C?font=poppins&text=HELLO%5Cn%5CnWORLD',
+        title: "tesztkép",
+        slug: "tesztkep", 
+        level: "",
+        tags: ["teszt"],
+        mediaID: 'cSvyvuC-vPY',
+        mediaTitle: 'cím'
+      },
     ],
   },
 
