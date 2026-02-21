@@ -3,6 +3,7 @@ import { isLocal } from "../config/config.js";
 const AppState = {
   userEmail: "",
   decks: [],
+  trainings: [],
   currentDeck: {},
   currentCard: {},
   currentStock: [],
