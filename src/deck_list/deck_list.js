@@ -227,7 +227,7 @@ const DeckList = {
   async loadTrainings() {
     try {
       AppState.trainings.forEach((training) => {
-        console.log("LOAD TRAININGS")
+        //console.log("LOAD TRAININGS")
         if (training.length === 0) return;
         const div = document.createElement("div");
         div.className = "card loading";

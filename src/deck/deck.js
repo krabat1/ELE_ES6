@@ -221,7 +221,17 @@ const Deck = {
     <option value="1" selected>1</option>  
     <option value="2">2</option>*/
 
-    DOM.switchView.querySelector("h2").textContent = deck_niceText;
+    //DOM.switchView.querySelector("h2").textContent = deck_niceText;
+    const heading = DOM.switchView.querySelector("h2");
+    // Tisztítsuk meg az elemet 
+    heading.textContent = '';
+    // Csomópontok létrehozása és hozzáadása
+    heading.append(
+      document.createTextNode(deck_niceText),
+    );
+
+    let subtitle_added = false
+
 
     // kedvencekben van-e? megállapításához
     let favs = JSON.parse(localStorage.getItem("favs") || "[]");
@@ -249,6 +259,17 @@ const Deck = {
         !this.isTraining
       ){
         Dev.log(LT.TRAINING, `isTraining ${this.isTraining}`)
+
+        if(!subtitle_added 
+          && AppState.currentDeck.cards[cardIndex].hasOwnProperty('dayName') 
+          && AppState.currentDeck.cards[cardIndex].dayName != ''){
+          heading.append(
+            document.createElement("br"),
+            document.createTextNode(AppState.currentDeck.cards[cardIndex].dayName)
+          );
+          subtitle_added = true
+        }
+
         let cardNumber = i.toString();
         if (cardNumber < 10) {
           cardNumber = cardNumber.padStart(2, "0");

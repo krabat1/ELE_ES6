@@ -221,7 +221,7 @@
       }
     }
 
-    #home .grid {
+    #home #deckGrid.grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(10.201rem, 1fr));
       gap: 1rem;
@@ -864,6 +864,32 @@
         rgb(252, 224, 68) 8px,
         rgb(252, 224, 68) 36px
         );
+    }
+
+    #switchView #mozgas_video.grid.cardView {
+      background: repeating-linear-gradient( -10deg,
+        transparent,
+        transparent 19px,
+        #ff0101 21px,
+        #ff0101 25px,
+        transparent 27px
+      ),repeating-linear-gradient( -20deg,
+        #e5a51a,
+        #e5a51a 18px,
+        #fff200 21px,
+        #fff200 25px,
+        #e5a51a 27px
+      );
+    }
+
+    #switchView #figyelem-fejleszto.grid.cardView {
+      background-color: #e5e5f7;
+      opacity: 1;
+      background: 
+      linear-gradient(135deg, #7bb6b755 25%, transparent 25%) -40px 0/ 80px 80px, 
+      linear-gradient(225deg, #7bb6b7 25%, transparent 25%) -40px 0/ 80px 80px, 
+      linear-gradient(315deg, #7bb6b755 25%, transparent 25%) 0px 0/ 80px 80px, 
+      linear-gradient(45deg, #7bb6b7 25%, #e5e5f7 25%) 0px 0/ 80px 80px;
     }
     
 
