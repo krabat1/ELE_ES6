@@ -57,7 +57,7 @@ const Card = {
         }
         if (!isCardView) {
           DOM.switchView.querySelector(".grid").classList.add("cardView");
-          console.log('cardView class added')
+          //console.log('cardView class added')
           //navTo History('card',{deck:currentDeck.slug, cardNumber:k});
         }
         DOM.switchView.querySelector(`[data-card-number="${k}"]`).scrollIntoView({
@@ -275,7 +275,7 @@ const Card = {
         try {
           state.lastTime = state.instance.getCurrentTime();
         } catch (e) {
-          console.log("Még nem lehetett lekérdezni az időt.");
+          //console.log("Még nem lehetett lekérdezni az időt.");
         }
       }
 

@@ -14,7 +14,6 @@ import { isLocal } from "../config/config.js";
 const Deck = {
   isTraining: false,
   async openDeck(deck_slug, deck_niceText, appStateSource) {
-    console.log(appStateSource)
     DOM.switchView.querySelector(".grid").setAttribute("id", deck_slug);
     if (deck_slug === DeckList.takeFive_base.slug) {
       // "takeFive"
@@ -154,10 +153,12 @@ const Deck = {
         return acc.day > val ? acc.day : val;
       });
       AppState.currentDeck.trainingDaysMax = max.day;
-      this.isTraining = max.day > 0
-      console.log('VAN DAY',max.day)
+      this.isTraining = (max.day > 0)
+      Dev.log(LT.TRAINING, 'TRAINING! DAYS:', max.day)
     }else{
+      this.isTraining = false
       AppState.currentDeck.trainingDaysMax = 0;
+      Dev.log(LT.TRAINING, 'NOT TRAINING!')
     }
 
     if( this.isTraining ){
@@ -203,6 +204,11 @@ const Deck = {
       if(!AppState.trainingStates[AppState.currentDeck.slug]){
         AppState.trainingStates[AppState.currentDeck.slug] = 1
       }
+    }else if( document.querySelector('.daySelectDiv') ){
+      document.querySelector('.daySelectDiv')
+      .parentNode
+      .removeChild(document.querySelector('.daySelectDiv'))
+      Dev.log(LT.TRAINING, 'SELECT REMOVED')
     }
 
     
@@ -228,17 +234,21 @@ const Deck = {
 
     for (let i = 1; i <= AppState.currentDeck.cards.length; i++) {
       let cardIndex = i - 1;
-      Dev.log(LT.TRAINING, `CARD DAY: ${AppState.currentDeck.cards[cardIndex].day}`)
-      Dev.log(LT.TRAINING, `SELECTEDDAY: ${AppState.trainingStates[AppState.currentDeck.slug]}`)
+      Dev.log(LT.TRAINING, 'DEBUG',
+        {isTraining: this.isTraining},
+        {x: AppState.currentDeck.cards[cardIndex].day},
+        {y: AppState.trainingStates[AppState.currentDeck.slug]}
+      )
+
       if(
 
         (this.isTraining 
         && 
-        AppState.currentDeck.cards[cardIndex].day == AppState.trainingStates[AppState.currentDeck.slug])
+        AppState.currentDeck.cards[cardIndex].day == AppState.trainingStates[AppState.currentDeck.slug]) 
         || 
         !this.isTraining
       ){
-
+        Dev.log(LT.TRAINING, `isTraining ${this.isTraining}`)
         let cardNumber = i.toString();
         if (cardNumber < 10) {
           cardNumber = cardNumber.padStart(2, "0");
@@ -416,7 +426,7 @@ const Deck = {
     Dev.log(LT.CARD, 'showCardNew caller',{caller})
     if (!cardNumber) Dev.log(LT.DECK, new Error("cardNumber"), { cardNumber });
     if (DOM.switchView.querySelector(".grid").classList.contains("cardView")) {
-      console.log('showCardNew remove .cardView')
+      //console.log('showCardNew remove .cardView')
       DOM.switchView.querySelector(".grid").classList.remove("cardView");
       pushToHistory
         ? Nav.navToHistory("deck", {
@@ -428,7 +438,7 @@ const Deck = {
       //DOM.currentCard = null;
       Card.setCurrentCard(null, "showCardNew() - reset");
     } else {
-      console.log('showCardNew add .cardView')
+      //console.log('showCardNew add .cardView')
       DOM.switchView.querySelector(".grid").classList.add("cardView");
       if (cardNumber) {
         //console.log('sign a '+ JSON.stringify(currentDeck))
