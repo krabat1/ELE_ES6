@@ -9,6 +9,7 @@ const AppState = {
   currentStock: [],
   currentWaste: [],
   playerStates: {},
+  trainingStates: {},
 };
 if (isLocal) window.AppState = AppState;
 

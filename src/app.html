@@ -32,9 +32,23 @@
         <button class="red" data-action="logout">Kijelentkezés</button>
       </div>
 
-      <h2>Paklik</h2>
+      <!--h2>Paklik</!--h2>
       <div class="loader"></div>
-      <div class="grid" id="deckGrid"></div>
+      <div-- class="grid" id="deckGrid"></div-->
+      <div class="tabs">
+        <input type="radio" name="tab-csoport" id="t1" checked>
+        <label for="t1">Paklik</label>
+        <input type="radio" name="tab-csoport" id="t2">
+        <label for="t2">Tréningek</label>
+        <div class="content" data-tab="1">
+          <div class="loader"></div>
+          <div class="grid" id="deckGrid"></div>
+        </div>
+        <div class="content" data-tab="2">
+          <!--div class="loader"></!--div-->
+          <div class="grid" id="trainingGrid"></div>
+        </div>
+      </div>
     </div>
 
     <div id="switchView" class="view" style="display: none; padding: 1rem">
@@ -43,7 +57,7 @@
         <button class="green" data-action="fakeRandom">Húzok egy kártyát</button>
       </div>
       <div id="description"></div>
-      <h2>Paklik</h2>
+      <h2></h2>
       <div class="loader"></div>
       <div class="grid" id="switchCards"></div>
     </div>

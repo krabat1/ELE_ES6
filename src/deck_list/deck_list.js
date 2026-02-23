@@ -223,6 +223,65 @@ const DeckList = {
       Dev.log(LT.DECKS, new Error(`Hiba a deck-list betöltésénél.`), err)
     }
   },
+  
+  async loadTrainings() {
+    try {
+      AppState.trainings.forEach((training) => {
+        console.log("LOAD TRAININGS")
+        if (training.length === 0) return;
+        const div = document.createElement("div");
+        div.className = "card loading";
+
+        const niceTextPara = document.createElement("p");
+        niceTextPara.textContent = training.niceText;
+        div.appendChild(niceTextPara);
+
+        const deckImg = document.createElement("img");
+        deckImg.className = "deckimg";
+        deckImg.setAttribute("src", training.imageUrl);
+        deckImg.setAttribute("alt", training.niceText);
+        deckImg.onload = function (event) {
+          DeckList.handleImageLoad(this);
+        };
+        deckImg.dataset.slug = training.slug
+        div.appendChild(deckImg);
+
+        const protect = document.createElement("div");
+        protect.className = "protect";
+        div.appendChild(protect);
+
+        /*div.innerHTML = `
+              <p>${deck.niceText}</p>
+              <img class="deckimg" src="${deck.imageUrl}" alt="${deck.niceText}" onload="this.handleImageLoad(this);">
+              <div class="protect"></div>`;*/
+        div.dataset.action = "open-training"
+        /*div.onclick = () => {
+          UI.initView("switchView");
+          DOM.switchView.querySelector("h2").textContent = "";
+          Deck.openDeck(deck.slug, deck.niceText);
+        };*/
+        //DOM.home.querySelector(".loader").setAttribute("style", "display:none");
+        /*let loader = DOM.home.querySelector("#trainingGrid").previousSibling
+        loader.setAttribute("style", "display:none");*/
+        DOM.home.querySelector("#trainingGrid").appendChild(div);
+      });
+      Dev.log(LT.DECKS, 'append >home< DOM elements')
+      // itt belemegy a napi minikihívás meg a kedvencek, ha lesz
+      Dev.log(LT.DECKS, "takeFive & favs --> AppState.decks")
+      
+      /*let favs = JSON.parse(localStorage.getItem("favs") || "[]");
+      this.favs_base.cards = favs;
+      AppState.decks.push(this.favs_base);
+
+      let takeFive = JSON.parse(localStorage.getItem("takeFive") || "[]");
+      this.takeFive_base.cards = takeFive;
+      AppState.decks.push(this.takeFive_base);*/
+
+    } catch (err) {
+      Dialog.showDialog("Hiba a tréning-lista betöltésénél.");
+      Dev.log(LT.DECKS, new Error(`Hiba a tréning-lista betöltésénél.`), err)
+    }
+  },
 
   /**
    * Eltávolítja a 'loading' osztályt a kép szülőjéről.

@@ -83,6 +83,29 @@ async function loadApp() {
  */
 function initEventListeners() {
   Dev.log(LT.INIT, "initEventListeners() fut");
+
+  document.addEventListener('change', function(event) {
+    // Ellenőrizzük, hogy valóban egy select elemről van-e szó
+    const target = event.target;
+    
+    if (target.tagName === 'SELECT') {
+      // A data-attribútum elérése a dataset segítségével
+      const day = target.dataset.day; // <select data-category="...">
+      //AppState.currentDeck.selectedTrainingDay = Number(target.value);
+      AppState.trainingStates[AppState.currentDeck.slug] = Number(target.value);
+      // save to localStorage
+      Dev.log(LT.TRAINING, `...selectedTrainingDay_1 ${AppState.trainingStates[AppState.currentDeck.slug]}`)
+      //console.log(`Kategória: ${category}, Kiválasztott érték: ${selectedValue}`);
+
+      Deck.openDeck(
+        AppState.currentDeck.slug, 
+        AppState.currentDeck.niceText,
+        AppState.trainings
+      );
+      Deck.disableButton()
+    }
+  });
+
   window.addEventListener('click', function(event){
 
     // const action = event.target.dataset.action;
@@ -130,7 +153,40 @@ function initEventListeners() {
       DOM.switchView.querySelector("h2").textContent = "";
       Deck.openDeck(
         event.target.previousElementSibling.dataset.slug, 
-        event.target.previousElementSibling.getAttribute('alt')
+        event.target.previousElementSibling.getAttribute('alt'),
+        AppState.decks
+      );
+    }
+
+    if (action === 'prev-day'){
+      let select = this.document.querySelector(".daySelect")
+      if (select.selectedIndex > 0) {
+        select.selectedIndex--;
+        //Deck.disableButton()
+        const event = new Event('change', { bubbles: true });
+        select.dispatchEvent(event);
+      }
+    }
+    if (action === 'next-day'){
+      let select = this.document.querySelector(".daySelect")
+      //if (select.selectedIndex < select.options.length - 1) {
+      if (select.selectedIndex < AppState.currentDeck.trainingDaysMax - 1) {
+        select.selectedIndex++;
+        //Deck.disableButton()
+        const event = new Event('change', { bubbles: true });
+        select.dispatchEvent(event);
+      }
+    }
+
+    if (action === 'open-training'){
+      // click to .protect
+      //console.log(event.target.previousElementSibling)
+      UI.initView("switchView");
+      DOM.switchView.querySelector("h2").textContent = "";
+      Deck.openDeck(
+        event.target.previousElementSibling.dataset.slug, 
+        event.target.previousElementSibling.getAttribute('alt'),
+        AppState.trainings
       );
     }
 
@@ -380,6 +436,7 @@ async function init() {
   DOM.loginError.textContent = "\u231B Bejelentkezés ellenőrzése...";
   Dev.log(LT.INIT, "deckek betöltése");
   DeckList.loadDecks(); // gyorsabb ha már most
+  DeckList.loadTrainings(); // gyorsabb ha már most
   await new Promise((resolve) => setTimeout(resolve, 1000));
   //console.log('bejelentkezés ellenőrzése')
   const ok = await Auth.tryAutoLogin();
