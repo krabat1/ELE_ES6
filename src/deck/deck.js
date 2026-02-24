@@ -148,19 +148,23 @@ const Deck = {
 
       Dev.log(LT.TRAINING, `...selectedTrainingDay_2 ${AppState.trainingStates[AppState.currentDeck.slug]}`)
 
-    if( AppState.currentDeck.cards[0].hasOwnProperty("day") ){
-      const max = AppState.currentDeck.cards.reduce((acc, val) => {
-        return acc.day > val ? acc.day : val;
-      });
-      AppState.currentDeck.trainingDaysMax = max.day;
-      this.isTraining = (max.day > 0)
-      Dev.log(LT.TRAINING, 'TRAINING! DAYS:', max.day)
+    if(AppState.currentDeck.cards.length > 0){
+      if( AppState.currentDeck.cards[0].hasOwnProperty("day") ){
+        const max = AppState.currentDeck.cards.reduce((acc, val) => {
+          return acc.day > val ? acc.day : val;
+        });
+        AppState.currentDeck.trainingDaysMax = max.day;
+        this.isTraining = (max.day > 0)
+        Dev.log(LT.TRAINING, 'TRAINING! DAYS:', max.day)
+      }else{
+        this.isTraining = false
+        AppState.currentDeck.trainingDaysMax = 0;
+        Dev.log(LT.TRAINING, 'NOT TRAINING!')
+      }
     }else{
-      this.isTraining = false
-      AppState.currentDeck.trainingDaysMax = 0;
-      Dev.log(LT.TRAINING, 'NOT TRAINING!')
+      Dev.log(LT.ERROR, new Error('NO CARDS (Deck.openDeck)'))
     }
-
+    
     if( this.isTraining ){
       const selectHolder = document.createElement('div')
       selectHolder.className = "daySelectDiv"
@@ -174,9 +178,9 @@ const Deck = {
       nextButton.className = "green"
       nextButton.innerText = "Következő >"
       nextButton.dataset.action = "next-day"
-      const label = document.createElement("label")
-      label.setAttribute("for","daySelect")
-      label.innerText = "Alkalom: "
+      //const label = document.createElement("label")
+      //label.setAttribute("for","daySelect")
+      //label.innerText = "Alkalom: "
       const select = document.createElement("select")
       select.dataset.day = "day"
       select.className ="daySelect"
@@ -193,7 +197,7 @@ const Deck = {
         select.appendChild(option)
       }
       selectHolder.appendChild(prevButton)
-      selectHolder.appendChild(label)
+      //selectHolder.appendChild(label)
       selectHolder.appendChild(select)
       selectHolder.appendChild(nextButton)
 
@@ -572,13 +576,13 @@ const Deck = {
     Dev.log(LT.EVENT, `dailyChallengeBtn.onclick`);
     UI.initView("switchView");
     DOM.switchView.querySelector("h2").textContent = "";
-    this.openDeck("takeFive", "Napi Minikihívás");
+    this.openDeck(DeckList.takeFive_base.slug, DeckList.takeFive_base.niceText, AppState.decks);
   },
   openFavs() {
     Dev.log(LT.EVENT, `favoritesBtn.onclick`);
     UI.initView("switchView");
     DOM.switchView.querySelector("h2").textContent = "";
-    this.openDeck("favs", "Kedvencek");
+    this.openDeck(DeckList.favs_base.slug, DeckList.favs_base.niceText, AppState.decks);
   },
 
   disableButton(){

@@ -99,6 +99,14 @@ const Card = {
    */
   addToFavs(event) {
     let favs = JSON.parse(localStorage.getItem("favs") || "[]");
+    // kódismétlés DeckList.favsToDecks
+    if(favs.length > 0){
+      favs.forEach((fav) => {
+        if(fav.hasOwnProperty('day')) delete fav.day 
+        if(fav.hasOwnProperty('dayName')) delete fav.dayName
+        console.log('tréning propertyk törölve')
+      })
+    }
     Dev.log(LT.FAVS, "addToFavs", AppState.currentCard, favs);
     // NEM ellenőrizzük hogy már kedvenc-e!
     favs.push(AppState.currentCard);

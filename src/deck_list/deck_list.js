@@ -315,7 +315,7 @@ const DeckList = {
       if (DOM.switchView.querySelector("h2").textContent === "Napi Minikihívás") {
         UI.initView("switchView");
         DOM.switchView.querySelector("h2").textContent = "";
-        Deck.openDeck("takeFive", "Napi Minikihívás");
+        Deck.openDeck("takeFive", "Napi Minikihívás", AppState.decks);
       }
       /*if(favs.length == 0){
             switchView.querySelector(".grid").classList.remove('cardView');
@@ -326,6 +326,14 @@ const DeckList = {
 
   favsToDecks() {
     let favs = JSON.parse(localStorage.getItem("favs") || "[]");
+    // Kódismétlés Card.addToFavs
+    if(favs.length > 0){
+      favs.forEach((fav) => {
+        if(fav.hasOwnProperty('day')) delete fav.day 
+        if(fav.hasOwnProperty('dayName')) delete fav.dayName
+        console.log('tréning propertyk törölve')
+      })
+    }
     const index2 = AppState.decks.findIndex((deck) => {
       if (!deck.slug) {
         Dev.log(LT.DECKS, "favsToDecks: nincs ilyen tulajdonság!");
@@ -338,7 +346,7 @@ const DeckList = {
       if (DOM.switchView.querySelector("h2").textContent === "Kedvencek") {
         //UI.initView("switchView");
         DOM.switchView.querySelector("h2").textContent = "";
-        Deck.openDeck("favs", "Kedvencek");
+        Deck.openDeck("favs", "Kedvencek", AppState.decks);
       }
       if (favs.length == 0) {
         Dev.log(LT.DECKS,'üres tömb',{_favs_length: favs.length})
