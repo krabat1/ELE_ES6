@@ -883,13 +883,18 @@
     }
 
     #switchView #figyelem-fejleszto.grid.cardView {
-      background-color: #e5e5f7;
-      opacity: 1;
-      background: 
-      linear-gradient(135deg, #7bb6b755 25%, transparent 25%) -40px 0/ 80px 80px, 
-      linear-gradient(225deg, #7bb6b7 25%, transparent 25%) -40px 0/ 80px 80px, 
-      linear-gradient(315deg, #7bb6b755 25%, transparent 25%) 0px 0/ 80px 80px, 
-      linear-gradient(45deg, #7bb6b7 25%, #e5e5f7 25%) 0px 0/ 80px 80px;
+      background-image: linear-gradient(
+        135deg, 
+        rgb(195, 141, 107) 0%, 
+        rgb(193, 181, 156) 16.667%, 
+        rgb(157, 194, 188) 33.333%, 
+        rgb(102, 176, 190) 50%, 
+        rgb(51, 133, 162) 66.667%, 
+        rgb(22, 82, 113) 83.333%, 
+        rgb(29, 40, 64) 100%); 
+      background-size: cover; 
+      background-position: center center; 
+      background-repeat: no-repeat;
     }
     
 

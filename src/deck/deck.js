@@ -13,7 +13,7 @@ import { isLocal } from "../config/config.js";
 
 const Deck = {
   isTraining: false,
-  async openDeck(deck_slug, deck_niceText, appStateSource) {
+  async openDeck(deck_slug, deck_niceText, appStateSource = AppState.decks, dayArg = 0, pushToHistory = true) {
     DOM.switchView.querySelector(".grid").setAttribute("id", deck_slug);
     if (deck_slug === DeckList.takeFive_base.slug) {
       // "takeFive"
@@ -68,10 +68,10 @@ const Deck = {
     /*Dev.log(LT.DECK, `A pakli le van töltve? >${downloaded}< (downloaded)`);*/
     //hideAll("deckView");
     UI.hideAll("switchView");
-    Nav.navToHistory("deck", {
+    /*Nav.navToHistory("deck", {
       deck_slug: deck_slug,
       deck_niceText: deck_niceText,
-    });
+    });*/
     const index = appStateSource.findIndex((deck) => deck.slug === deck_slug);
     /*if (!downloaded) {
       try {
@@ -146,7 +146,7 @@ const Deck = {
     AppState.currentStock = [];
     AppState.currentWaste = [];
 
-      Dev.log(LT.TRAINING, `...selectedTrainingDay_2 ${AppState.trainingStates[AppState.currentDeck.slug]}`)
+    Dev.log(LT.TRAINING, `...selectedTrainingDay_2 ${AppState.trainingStates[AppState.currentDeck.slug]}`)
 
     if(AppState.currentDeck.cards.length > 0){
       if( AppState.currentDeck.cards[0].hasOwnProperty("day") ){
@@ -154,7 +154,7 @@ const Deck = {
           return acc.day > val ? acc.day : val;
         });
         AppState.currentDeck.trainingDaysMax = max.day;
-        this.isTraining = (max.day > 0)
+        this.isTraining = (max.day > 0) // true
         Dev.log(LT.TRAINING, 'TRAINING! DAYS:', max.day)
       }else{
         this.isTraining = false
@@ -164,6 +164,16 @@ const Deck = {
     }else{
       Dev.log(LT.ERROR, new Error('NO CARDS (Deck.openDeck)'))
     }
+
+    console.log('deck_niceText2',deck_niceText)
+    pushToHistory
+      ? Nav.navToHistory("deck", {
+          deck_slug: deck_slug,
+          deck_niceText: deck_niceText,
+          isTraining: this.isTraining,
+          day: dayArg
+        })    
+      : console.log('no pushToHistory') ;
     
     if( this.isTraining ){
       const selectHolder = document.createElement('div')
@@ -186,9 +196,11 @@ const Deck = {
       select.className ="daySelect"
       for(let i = 1 ; i <= AppState.currentDeck.trainingDaysMax; i++){
         const option = document.createElement('option')
-        if(AppState.trainingStates[AppState.currentDeck.slug]
+        //if(AppState.trainingStates[AppState.currentDeck.slug]
+        if(dayArg
           &&
-          i == AppState.trainingStates[AppState.currentDeck.slug]
+          //i == AppState.trainingStates[AppState.currentDeck.slug]
+          i == dayArg
         ){
           option.selected = true
         }
@@ -203,7 +215,10 @@ const Deck = {
 
       if(!DOM.switchView.querySelector(".daySelectDiv")){
         DOM.switchView.querySelector(".grid").parentNode.insertBefore(selectHolder, DOM.switchView.querySelector(".grid"))
+      }else{
+        DOM.switchView.querySelector(".daySelectDiv").replaceWith(selectHolder);
       }
+
 
       if(!AppState.trainingStates[AppState.currentDeck.slug]){
         AppState.trainingStates[AppState.currentDeck.slug] = 1
@@ -226,13 +241,14 @@ const Deck = {
     <option value="2">2</option>*/
 
     //DOM.switchView.querySelector("h2").textContent = deck_niceText;
-    const heading = DOM.switchView.querySelector("h2");
+    //const heading = DOM.switchView.querySelector("h2");
     // Tisztítsuk meg az elemet 
-    heading.textContent = '';
+    //heading.textContent = '';
     // Csomópontok létrehozása és hozzáadása
+    /*console.log('deck_niceText3',deck_niceText)
     heading.append(
       document.createTextNode(deck_niceText),
-    );
+    );*/
 
     let subtitle_added = false
 
@@ -267,7 +283,11 @@ const Deck = {
         if(!subtitle_added 
           && AppState.currentDeck.cards[cardIndex].hasOwnProperty('dayName') 
           && AppState.currentDeck.cards[cardIndex].dayName != ''){
+          const heading = DOM.switchView.querySelector("h2");
+          // Tisztítsuk meg az elemet 
+          heading.textContent = '';
           heading.append(
+            document.createTextNode(AppState.currentDeck.niceText),
             document.createElement("br"),
             document.createTextNode(AppState.currentDeck.cards[cardIndex].dayName)
           );
@@ -548,6 +568,8 @@ const Deck = {
       DOM.switchView.querySelector(".newTakeFive").disabled = false;
     }
     DeckList.takeFiveToDecks();
+    this.openDeck(DeckList.takeFive_base.slug, DeckList.takeFive_base.niceText, AppState.decks);
+    Dev.log(LT.DECK, 'newTakeFive END')
   },
   devRemoveTakeFive() {
     localStorage.setItem("takeFive", JSON.stringify([]));

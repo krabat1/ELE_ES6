@@ -100,7 +100,8 @@ function initEventListeners() {
       Deck.openDeck(
         AppState.currentDeck.slug, 
         AppState.currentDeck.niceText,
-        AppState.trainings
+        AppState.trainings,
+        Number(target.value)
       );
       Deck.disableButton()
     }
@@ -186,7 +187,10 @@ function initEventListeners() {
       Deck.openDeck(
         event.target.previousElementSibling.dataset.slug, 
         event.target.previousElementSibling.getAttribute('alt'),
-        AppState.trainings
+        AppState.trainings,
+        AppState.playerStates[event.target.previousElementSibling.dataset.slug]
+          ? AppState.playerStates[event.target.previousElementSibling.dataset.slug]
+          : 1
       );
     }
 
@@ -344,6 +348,7 @@ function initEventListeners() {
       deck: () => {
         //console.log(`X ${JSON.stringify(event.state)}`);
         //ha nincs megnyitva a pakli
+        console.log('deck_niceText_main', event.state.deck_niceText)
         if (AppState.currentDeck.slug !== event.state.deck_slug) {
           UI.initView("switchView");
           DOM.switchView.querySelector("h2").textContent = "";
@@ -353,7 +358,13 @@ function initEventListeners() {
             { _AppState_currentDeck_slug: AppState.currentDeck.slug },
             { _event_state_deck__slug: event.state.deck_slug },
           );
-          Deck.openDeck(event.state.deck_slug, event.state.niceText);
+          Deck.openDeck(
+            event.state.deck_slug, 
+            event.state.deck_niceText,
+            event.state.isTraining ? AppState.trainings : AppState.decks,
+            event.state.day,
+            false
+          );
         } else {
           Dev.log(LT.NAV, "Ugyanaz a deck ");
           UI.hideAll("switchView");
@@ -361,6 +372,16 @@ function initEventListeners() {
             DOM.switchView.querySelector(".grid").classList.contains("cardView")
           ) {
             DOM.switchView.querySelector(".grid").classList.remove("cardView");
+          }
+          if(event.state.isTraining){
+            Dev.log(LT.NAV, `deck ua, day: ${event.state.day}`)
+            Deck.openDeck(
+              event.state.deck_slug, 
+              event.state.niceText,
+              event.state.isTraining ? AppState.trainings : AppState.decks,
+              event.state.day,
+              false
+            );
           }
         }
       },
