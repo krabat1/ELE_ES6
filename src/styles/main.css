@@ -278,6 +278,15 @@
       & > *:nth-child(14) {
         order: 86;
       }
+      & > *:nth-child(15) {
+        order: 85;
+      }
+      & > *:nth-child(16) {
+        order: 84;
+      }
+      & > *:nth-child(17) {
+        order: 83;
+      }
     }
 
     div:has(.protect) {
@@ -764,6 +773,9 @@
       }
     }
 
+    #switchView .grid.cardView {
+      background: ghostwhite;
+    }
     #switchView #memo_mester.grid.cardView {
       background: #2a7b9b;
       background: radial-gradient(circle, orangered 50%, coral 100%);
