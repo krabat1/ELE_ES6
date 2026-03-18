@@ -176,6 +176,21 @@ const Deck = {
       : console.log('no pushToHistory') ;
     
     if( this.isTraining ){
+
+      dayArg = 1;
+
+      if(!localStorage.getItem("trainingStates") === null){
+        AppState.trainingStates = JSON.parse(localStorage.getItem("trainingStates"))
+      }
+      
+      if(!AppState.trainingStates[AppState.currentDeck.slug]){
+        AppState.trainingStates[AppState.currentDeck.slug] = dayArg
+        localStorage.setItem('trainingStates', JSON.stringify(AppState.trainingStates))
+      }else{
+        dayArg = AppState.trainingStates[AppState.currentDeck.slug]
+      }
+
+
       const selectHolder = document.createElement('div')
       selectHolder.className = "daySelectDiv"
       const prevButton = document.createElement('button')
