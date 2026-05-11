@@ -2,6 +2,8 @@ import { isLocal } from "../config/config.js";
 
 const AppState = {
   userEmail: "",
+  type: 'guest',
+  access: 'demo',
   decks: [],
   trainings: [],
   currentDeck: {},

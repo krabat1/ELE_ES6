@@ -12,14 +12,14 @@ const Auth = {
 
   async checkLogin(email, password, timeZone) {
     try {
-      Dev.log(LT.AUTH, "accessAPI/login");
       const res = await fetch(
         `${API.accessAPI}?action=login&email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}&clientTimeZone=${encodeURIComponent(timeZone)}`,
       );
 
       const json = await res.json();
-      //console.log(json)
 
+      Dev.log(LT.AUTH, "accessAPI/login", {json});
+      
       if (!json.success) {
         Dev.log(
           LT.API,
@@ -86,7 +86,7 @@ const Auth = {
       const json = await res.json();
       if (json.success && json.data && json.data.valid) {
         // token érvényes → user be van lépve
-        Dev.log(LT.AUTH, "Login success, token verified");
+        Dev.log(LT.AUTH, "Login success, token verified", {json});
         DOM.loginError.textContent = "\u2714\uFE0F Bejelentkezve";
         await new Promise((resolve) => setTimeout(resolve, 1000));
         return true;
